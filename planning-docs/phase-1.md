@@ -11,7 +11,9 @@ For Part 1, I'm building a preliminary UI with two features:
 1) Display questions to the user and show answers at the end of the quiz.
 2) Some questions may (or may not) be shown, depending on answers to previous questions.
 
-** SPECS **
+
+**SPECS**
+
 I want to build an online quiz.
 When a user answers a question, the next question shows up.
 Some of the questions depend on answers to previous questions – 
@@ -20,7 +22,7 @@ Some of the questions depend on answers to previous questions –
 However, the triggered questions don’t necessarily show up right after the current question (i.e., questions are not displayed out of list order).
 Some of the questions will be multiple-choice questions. Some of these MCQs will only accept one answer, while some can accept more than one.
 
-** STEPS **
+**STEPS**
 1. Store a pre-specified list of questions.
 2. Store a pre-specified list of answers.
 3. Choose a question from the list to become the current question (e.g., Q#1).
