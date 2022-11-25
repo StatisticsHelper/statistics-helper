@@ -24,10 +24,25 @@ Some of the questions will be multiple-choice questions. Some of these MCQs will
 
 **STEPS**
 1. Store a pre-specified list of questions.
-2. Store a pre-specified list of answers.
-3. Choose a question from the list to become the current question (e.g., Q#1).
-4. Prompt the user with the current question.
-5. Store the answer to current question, alongside the current question itself, to display at the end of the quiz.
-6. Update questions & answers lists.
-7. Repeat steps 3-6 until all questions are displayed.
-8. Display to the user all of the question-answer pairs when the quiz is over.
+    - Some of the questions depend on previous ones. Store whether a question is dependent, and the question it depends on.
+3. Store a pre-specified list of answers.
+    - Answers will be linked to questions, where a single question can be linked to >1 answer.
+    - The list contains 4 categories of data for every answer:
+      1.  the current question whose answer this is,
+      2.  the content of the answer,
+      3.  whether this question has a dependent question, and
+      4.  whether this answer triggers the dependent question (if it exists).
+5. Choose a question from the list to become the current question (e.g., Q#1).
+6. Prompt the user with the current question.
+7. Store the answer to current question, alongside the current question itself, to display at the end of the quiz.
+8. Update questions & answers lists.
+    1.  Does the current question have dependent questions?
+        - YES?  Continue to Step 6.2.
+        - NO?   Move to Step 7.
+    3.  Does this answer trigger the dependent question?
+        - YES?  Move to Step 7.
+        - NO?
+            1.  Remove the dependent question from the questions list.
+            2.  Remove all answers linked to the dependent question from the answers list.
+10. Repeat steps 3-6 until all questions are displayed.
+11. Display to the user all of the question-answer pairs when the quiz is over.
