@@ -1,0 +1,162 @@
+[
+    {
+        "id": "00_Question",
+        "question": "What is your question? Use this to guide you.",
+        "required": "Yes",
+        "input": {
+            "type": "text",
+            "condition": "maxlength='100'"
+        },
+        "next": "01_goal"
+    },
+    {
+        "id": "01_goal",
+        "question": "What is your goal?",
+        "required": "Yes",
+        "input": {
+            "type": "checkbox",
+            "options": [
+                "Describe a dataset's central tendencies, distribution, association, etc.",
+                "Predict values from one dataset to another",
+                "Test hypotheses",
+                "Generate hypotheses for later exploration",
+                "I don't know"
+            ]
+        },
+        "next": "02_relationship"
+    },
+    {
+        "id": "02_relationship",
+        "question": "What kind of relationship?",
+        "required": "Yes",
+        "input": {
+            "type": "radio",
+            "options": [
+                "Association/correlation - no causation implied",
+                "Cause-and-effect",
+                "None (I want to describe my data only)"
+            ]
+        },
+        "next": "03_information"
+    },
+    {
+        "id": "03_information",
+        "question": "What information do you need from the statistics helper process?",
+        "required": "Yes",
+        "input": {
+            "type": "checkbox",
+            "options": [
+                "The math of how it works",
+                "Critiques and limitations",
+                "An example of implementation",
+                "Overview of method",
+                "Comparison of methods",
+                "How to teach the method or concepts (pedagogy)",
+                "How to implement the method",
+                "All the info you have!"
+            ]
+        },
+        "next": "04_have_designed"
+    },
+    {
+        "id": "04_have_designed",
+        "question": "Have you already collected your data or designed your data collection?",
+        "required": "Yes",
+        "input": {
+            "type": "radio",
+            "options": [
+                "Yes",
+                "No"
+            ]
+        },
+        "next": "04_sample_size"
+    },
+    {
+        "id": "04_sample_size",
+        "question": "Do you want to read about sample size choices?",
+        "required": "Yes",
+        "showCondition": {
+            "questionID": "04_have_designed",
+            "answer": [
+                "No"
+            ]
+        },
+        "input": {
+            "type": "radio",
+            "options": [
+                "Yes",
+                "No"
+            ]
+        },
+        "next": "05_repeated"
+    },
+    {
+        "id": "05_repeated",
+        "question": "Are you measuring teh same thing more than once in time or space?",
+        "required": "Yes",
+        "input": {
+            "type": "radio",
+            "options": [
+                "Yes",
+                "No, everything is independent",
+                "No, the points are different items"
+            ]
+        },
+        "next": "05_relationship"
+    },
+    {
+        "id": "05_relationship",
+        "question": "What relationship shape do you expect?",
+        "required": "No",
+        "showCondition": {
+            "questionID": "02_relationship",
+            "answer": [
+                "Association/correlation - no causation implied",
+                "Cause-and-effect"
+            ]
+        },
+        "input": {
+            "type": "radio",
+            "options": [
+                "Linear",
+                "Non-linear",
+                "Something else or I don't know"
+            ]
+        },
+        "next": "06_report"
+    },
+    {
+        "id": "06_report",
+        "question": "What do you need to report for your data",
+        "required": "Yes",
+        "input": {
+            "type": "checkbox",
+            "options": [
+                "I'm not sure yet - show me all possibilities",
+                "Intervals (error bars, variation, etc.)",
+                "How well this works for other things",
+                "Graphs and figures and plots!",
+                "Statistical significance (p values and test statstics)",
+                "No significance tests, I just want to see/show what it looks like",
+                "Comparisons among multiple groups"
+            ]
+        },
+        "next": "06_interpret"
+    },
+    {
+        "id": "06_interpret",
+        "question": "What type of mistakes in interpretation are you worried about?",
+        "required": "Yes",
+        "input": {
+            "type": "checkbox",
+            "options": [
+                "Sample size or statistical power",
+                "Survey/sampling bias",
+                "Meeting assumptions of the test",
+                "Measurement error",
+                "Statsitical significance but not meaningful results"
+            ]
+        },
+        "next": ""
+    }
+]
