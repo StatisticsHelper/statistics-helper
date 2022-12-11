@@ -52,7 +52,14 @@
         {
             id: "03_information",
             question: "What information do you need from the statistics helper process?",
-            required: "Yes",
+            required: "No",
+            showCondition: {
+                questionID: "01_goal",
+                answer: [
+                    "Test hypotheses",
+                    "I don't know"
+                ]
+            },
             input: {
                 type: "checkbox",
                 options: [
@@ -171,50 +178,6 @@
         }
     ]
 
-
-    questions = [
-        {
-            id: "00_Question",
-            question: "What is your question? Use this to guide you.",
-            required: "Yes",
-            input: {
-                type: "text",
-                condition: "maxlength='100'"
-            },
-            next: "01_goal"
-        },
-        {
-            id: "01_goal",
-            question: "What is your goal?",
-            required: "Yes",
-            input: {
-                type: "checkbox",
-                options: [
-                    "Describe a dataset's central tendencies, distribution, association, etc.",
-                    "Predict values from one dataset to another",
-                    "Test hypotheses",
-                    "Generate hypotheses for later exploration",
-                    "I don't know"
-                ]
-            },
-            next: "02_relationship"
-        },
-        {
-            id: "02_relationship",
-            question: "What kind of relationship?",
-            required: "Yes",
-            input: {
-                type: "radio",
-                options: [
-                    "Association/correlation - no causation implied",
-                    "Cause-and-effect",
-                    "None (I want to describe my data only)"
-                ]
-            },
-            next: ""
-        }
-    ]
-
     console.log(questions);
 
     /**------------------------------------------------------------------------------------------------- */
@@ -242,11 +205,11 @@
             fieldset.appendChild(input);
         }
         else if (question.input.type === "checkbox") {
-            console.log("checkbox coming!", question.input.type);
+            //console.log("checkbox coming!", question.input.type);
             let numOptions = question.input.options.length;
             for (let i = 0; i < numOptions; i++) {
                 let option = question.input.options[i];
-                console.log("option: ", option);
+                //console.log("option: ", option);
                 let input = document.createElement("input");
                 input.setAttribute("type", "checkbox");
                 input.setAttribute("name", `${question.id}-options`);
@@ -261,11 +224,11 @@
             }
         }
         else if (question.input.type === "radio") {
-            console.log("radio coming!", question.input.type);
+            //console.log("radio coming!", question.input.type);
             let numOptions = question.input.options.length;
             for (let i=0; i<numOptions; i++) {
                 let option = question.input.options[i];
-                console.log("option: ", option);
+                //console.log("option: ", option);
                 let input = document.createElement("input");
                 input.setAttribute("type", "radio");
                 input.setAttribute("name", `${question.id}-options`);
@@ -307,18 +270,54 @@
         return result;
     }
 
+        // this is a function to determine whether to show question or not
+        function determineShowConditionOf(question) {
+                if (question.required === "Yes") return true;
+
+                else { // question is not required --> check showCondition
+                    let qDependsOnID = question.showCondition.questionID;
+                    let qDependsOnAnswer = question.showCondition.answer;
+                    console.log("q depends on ID: ", qDependsOnID, " - and answer: ", qDependsOnAnswer);
+                    let qDependsOnPair = personalizedQuestionAnswerList.find(item => item.question.id === qDependsOnID)
+                    if (qDependsOnPair === undefined) { // question that q depends on wasn't shown in the first place
+                        console.log('qDependsOnPair === undefined');
+                        return false; // skip this question
+                    }
+                    else { // question that q depends on was shown before
+                        if (qDependsOnPair.question.input.type === 'radio' && qDependsOnAnswer.includes(qDependsOnPair.answer.answer)) {
+                            console.log("condition is met for radio!");
+                            return true;
+                        }
+                        else if (qDependsOnPair.question.input.type === 'checkbox') {
+                            console.log("checking checkbox condition")
+                            if (qDependsOnAnswer.length === qDependsOnPair.answer.answer.length // need to check if two answer arrays are equal
+                                && qDependsOnAnswer.every(item => qDependsOnPair.answer.answer.includes(item))
+                                && qDependsOnPair.answer.answer.every(item => qDependsOnAnswer.includes(item))
+                            ) {
+                                console.log("condition is met for checkbox!");
+                                return true;
+                            }
+                            else return false;
+                        }
+                        else {
+                            return false;
+                        }
+                    }
+                }
+        }
+
     // this is a function to get the value of the next question, to prepare it to be displayed
     function getNextQuestion(question) {
         let nextQ;
         for (let q of questions) {
-            console.log("q.id: ", q.id, "question.next: ", question.next);
+            //console.log("q.id: ", q.id, "question.next: ", question.next);
             if (q.id === question.next) {
                 nextQ = q;
-                console.log("q is: ", q)
             }
         }
         console.log("nextQ: ", nextQ);
-        return nextQ;
+        if (determineShowConditionOf(nextQ) === false) return getNextQuestion(nextQ);
+        else return nextQ;
     }
 
     // this is a function to remove the HTML elements created for the question after pressing next, to prepare for displaying the next question
@@ -332,7 +331,7 @@
         personalizedQuestionAnswerList.push({question: currentQuestion, answer: currentAnswer});
         clearWindow();
         let nextQuestion = getNextQuestion(currentQuestion);
-        console.log("currentQ.next: ", currentQuestion.next);
+        //console.log("currentQ.next: ", currentQuestion.next);
         if(currentQuestion.next !== "") promptQuestion(nextQuestion);
         if(currentQuestion.next === "") {
             console.log("personalized list: ", personalizedQuestionAnswerList);
