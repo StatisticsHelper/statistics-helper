@@ -183,7 +183,8 @@
     /**------------------------------------------------------------------------------------------------- */
 
 
-    let fieldset = document.getElementById("questionnaire-container")
+    let form = document.getElementById("questionnaire-form")
+    let fieldset = document.getElementById("question-fieldset")
 
     let personalizedQuestionAnswerList = [];
     let currentQuestion = {};
@@ -201,12 +202,19 @@
             let input = document.createElement("input");
             input.setAttribute("type", "text");
             input.setAttribute("id", `${question.id}-text-input`)
+            //input.setAttribute("required", "required");
             if(question.input.condition === "maxlength='100") input.setAttribute("maxlength", "100");
+            let label = document.createElement("label");
+            label.setAttribute("id", `${question.id}-label`)
+            label.setAttribute("for", `${question.id}-text-input`);
+            label.innerText = "Enter your question (maximum 100 characters): "
+            fieldset.appendChild(label);
             fieldset.appendChild(input);
         }
         else if (question.input.type === "checkbox") {
             //console.log("checkbox coming!", question.input.type);
             let numOptions = question.input.options.length;
+            fieldset.setAttribute("required", "required");
             for (let i = 0; i < numOptions; i++) {
                 let option = question.input.options[i];
                 //console.log("option: ", option);
@@ -243,6 +251,51 @@
             }
         }
     }
+    
+    // this is a function to validate the answer received for the current question so that users are required to answer before moving to next question
+    function checkIfCurrentAnswerIsValid() {
+        // for text input
+        if (currentQuestion.input.type === "text") {
+            var inputField = document.querySelector('fieldset input[type=text]');
+            if (inputField.value === '') {
+              alert('Please enter a value!');
+              return false;
+            }
+        }
+        
+        // for checkbox input
+        if (currentQuestion.input.type === "checkbox") {
+            var checkboxes = document.querySelectorAll('fieldset input[type=checkbox]');
+            var checked = false;
+            for (var i = 0; i < checkboxes.length; i++) {
+              if (checkboxes[i].checked) {
+                checked = true;
+                break;
+              }
+            }
+            if (!checked) {
+              alert('Please select at least one option!');
+              return false;
+            }
+        }
+
+        // for radio input
+        else if (currentQuestion.input.type === "radio") {
+            var radioButtons = document.querySelectorAll('fieldset input[type=radio]');
+            var checked = false;
+            for (var i = 0; i < radioButtons.length; i++) {
+              if (radioButtons[i].checked) {
+                checked = true;
+                break;
+              }
+            }
+            if (!checked) {
+              alert('Please select an option!');
+              return false;
+            }
+        }
+        return true;
+    }
 
     // this is a function to get the answer from the user for each question, then append it to a question-answer list
     function getCurrentAnswer() {
@@ -270,41 +323,41 @@
         return result;
     }
 
-        // this is a function to determine whether to show question or not
-        function determineShowConditionOf(question) {
-                if (question.required === "Yes") return true;
+    // this is a function to determine whether to show question or not
+    function determineShowConditionOf(question) {
+            if (question.required === "Yes") return true;
 
-                else { // question is not required --> check showCondition
-                    let qDependsOnID = question.showCondition.questionID;
-                    let qDependsOnAnswer = question.showCondition.answer;
-                    console.log("q depends on ID: ", qDependsOnID, " - and answer: ", qDependsOnAnswer);
-                    let qDependsOnPair = personalizedQuestionAnswerList.find(item => item.question.id === qDependsOnID)
-                    if (qDependsOnPair === undefined) { // question that q depends on wasn't shown in the first place
-                        console.log('qDependsOnPair === undefined');
-                        return false; // skip this question
+            else { // question is not required --> check showCondition
+                let qDependsOnID = question.showCondition.questionID;
+                let qDependsOnAnswer = question.showCondition.answer;
+                console.log("q depends on ID: ", qDependsOnID, " - and answer: ", qDependsOnAnswer);
+                let qDependsOnPair = personalizedQuestionAnswerList.find(item => item.question.id === qDependsOnID)
+                if (qDependsOnPair === undefined) { // question that q depends on wasn't shown in the first place
+                    console.log('qDependsOnPair === undefined');
+                    return false; // skip this question
+                }
+                else { // question that q depends on was shown before
+                    if (qDependsOnPair.question.input.type === 'radio' && qDependsOnAnswer.includes(qDependsOnPair.answer.answer)) {
+                        console.log("condition is met for radio!");
+                        return true;
                     }
-                    else { // question that q depends on was shown before
-                        if (qDependsOnPair.question.input.type === 'radio' && qDependsOnAnswer.includes(qDependsOnPair.answer.answer)) {
-                            console.log("condition is met for radio!");
+                    else if (qDependsOnPair.question.input.type === 'checkbox') {
+                        console.log("checking checkbox condition")
+                        if (qDependsOnAnswer.length === qDependsOnPair.answer.answer.length // need to check if two answer arrays are equal
+                            && qDependsOnAnswer.every(item => qDependsOnPair.answer.answer.includes(item))
+                            && qDependsOnPair.answer.answer.every(item => qDependsOnAnswer.includes(item))
+                        ) {
+                            console.log("condition is met for checkbox!");
                             return true;
                         }
-                        else if (qDependsOnPair.question.input.type === 'checkbox') {
-                            console.log("checking checkbox condition")
-                            if (qDependsOnAnswer.length === qDependsOnPair.answer.answer.length // need to check if two answer arrays are equal
-                                && qDependsOnAnswer.every(item => qDependsOnPair.answer.answer.includes(item))
-                                && qDependsOnPair.answer.answer.every(item => qDependsOnAnswer.includes(item))
-                            ) {
-                                console.log("condition is met for checkbox!");
-                                return true;
-                            }
-                            else return false;
-                        }
-                        else {
-                            return false;
-                        }
+                        else return false;
+                    }
+                    else {
+                        return false;
                     }
                 }
-        }
+            }
+    }
 
     // this is a function to get the value of the next question, to prepare it to be displayed
     function getNextQuestion(question) {
@@ -323,6 +376,14 @@
     // this is a function to remove the HTML elements created for the question after pressing next, to prepare for displaying the next question
     function clearWindow() {
         fieldset.innerHTML = "";
+        if(currentQuestion.next === "") {
+            document.getElementById('questionnaire-form').remove();
+            fieldset = document.createElement('fieldset');
+            let legend = document.createElement('legend');
+            legend.innerText = "A list of question-answer pairs";
+            fieldset.appendChild(legend);
+            document.body.appendChild(fieldset);
+        }
     }
 
     function moveToNextQuestion() {
@@ -334,24 +395,21 @@
         //console.log("currentQ.next: ", currentQuestion.next);
         if(currentQuestion.next !== "") promptQuestion(nextQuestion);
         if(currentQuestion.next === "") {
-            console.log("personalized list: ", personalizedQuestionAnswerList);
             console.log("FINAL QUESTION!!");
-            nextButton.remove();
-            let endButton = document.createElement("button");
-            endButton.setAttribute("id", "endButton");
-            endButton.innerText = "End";
-            fieldset.appendChild(endButton);
-            endButton.addEventListener('click', promptFinalResults);
+            let nextButton = document.getElementById("nextButton");
+            nextButton.setAttribute("id", "endButton");
+            nextButton.innerText = "End";
         }
     }
-
+    
     function promptFinalResults() {
         clearWindow();
+        console.log("personalized list: ", personalizedQuestionAnswerList);
         let resultList = document.createElement('ul');
         fieldset.appendChild(resultList);
         for (let i=0; i<personalizedQuestionAnswerList.length; i++) {
             let item = document.createElement('li');
-            item.innerText = "QUESTION: " + personalizedQuestionAnswerList[i].question.question + "      ANSWER: " + personalizedQuestionAnswerList;
+            item.innerText = "QUESTION: " + personalizedQuestionAnswerList[i].question.question + "      ANSWER: " + personalizedQuestionAnswerList[i].answer;
             resultList.appendChild(item);
         }
     }
@@ -361,7 +419,15 @@
         promptQuestion(currentQuestion);
     }
     
-    let nextButton = document.getElementById('nextButton');
-    nextButton.addEventListener('click', moveToNextQuestion);
-    
+    form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        if(checkIfCurrentAnswerIsValid()) {
+            if(currentQuestion.next !== "") {
+                moveToNextQuestion();
+            }
+            else {
+                promptFinalResults();
+            }
+        }
+    })
 })
