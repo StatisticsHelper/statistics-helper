@@ -7,6 +7,10 @@
             "type": "text",
             "condition": "maxlength='100'"
         },
+        "tags": {
+            "prefix": "",
+            "subtitles": []
+        },
         "next": "01_goal"
     },
     {
@@ -23,6 +27,16 @@
                 "I don't know"
             ]
         },
+        "tags": {
+            "prefix": "goal",
+            "subtitles": [
+                "descriptive",
+                "predictive",
+                "inferential",
+                "exploratory",
+                ""
+            ]
+        },
         "next": "02_relationship"
     },
     {
@@ -35,6 +49,14 @@
                 "Association/correlation - no causation implied",
                 "Cause-and-effect",
                 "None (I want to describe my data only)"
+            ]
+        },
+        "tags": {
+            "prefix": "causation",
+            "subtitles": [
+                "association (none implied)",
+                "cause-and-effect",
+                "none (descriptive)"
             ]
         },
         "next": "03_information"
@@ -56,6 +78,19 @@
                 "All the info you have!"
             ]
         },
+        "tags": {
+            "prefix": "paper type",
+            "subtitles": [
+                "description of method",
+                "critique",
+                "good example",
+                "general reference",
+                "review/comparison/metaanalysis",
+                "how to teach",
+                "guide to use",
+                ""
+            ]
+        },
         "next": "04_have_designed"
     },
     {
@@ -67,6 +102,13 @@
             "options": [
                 "Yes",
                 "No"
+            ]
+        },
+        "tags": {
+            "prefix": "study design",
+            "subtitles": [
+                "",
+                "a priori"
             ]
         },
         "next": "04_sample_size"
@@ -88,6 +130,13 @@
                 "No"
             ]
         },
+        "tags": {
+            "prefix": "study design",
+            "subtitles": [
+                "sample size",
+                ""
+            ]
+        },
         "next": "05_repeated"
     },
     {
@@ -100,6 +149,14 @@
                 "Yes",
                 "No, everything is independent",
                 "No, the points are different items"
+            ]
+        },
+        "tags": {
+            "prefix": "study design",
+            "subtitles": [
+                "repeated measures/randomized block/random effects",
+                "repeated measures/randomized block",
+                "correlation structures"
             ]
         },
         "next": "05_relationship"
@@ -123,6 +180,13 @@
                 "Something else or I don't know"
             ]
         },
+        "tags": {
+            "prefix": "relationship",
+            "subtitles": [
+                "linear",
+                "nonlinear"
+            ]
+        },
         "next": "06_report"
     },
     {
@@ -141,6 +205,21 @@
                 "Comparisons among multiple groups"
             ]
         },
+        "tags": {
+            "prefix": "interpretation and meaning",
+            "subtitles": [
+                "",
+                "confidence intervals/parameter estimation",
+                "cross validation",
+                "plotting",
+                "significance",
+                "exploratory only",
+                "post hoc comparisons",
+                "diagnostics",
+                "unsupervised clustering",
+                "effect size, variable importance, loadings"
+            ]
+        },
         "next": "06_interpret"
     },
     {
@@ -155,6 +234,16 @@
                 "Meeting assumptions of the test",
                 "Measurement error",
                 "Statsitical significance but not meaningful results"
+            ]
+        },
+        "tags": {
+            "prefix": "interpretation and meaning",
+            "subtitles": [
+                "statistical power",
+                "survey/sampling bias",
+                "meeting assumptions",
+                "measurement error",
+                ""
             ]
         },
         "next": ""

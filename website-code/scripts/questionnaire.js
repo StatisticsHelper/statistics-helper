@@ -17,6 +17,10 @@
                 type: "text",
                 condition: "maxlength='100'"
             },
+            tags: {
+                prefix: "",
+                subtitles: []
+            },
             next: "01_goal"
         },
         {
@@ -33,6 +37,16 @@
                     "I don't know"
                 ]
             },
+            tags: {
+                prefix: "goal",
+                subtitles: [
+                    "descriptive",
+                    "predictive",
+                    "inferential",
+                    "exploratory",
+                    ""
+                ]
+            },
             next: "02_relationship"
         },
         {
@@ -45,6 +59,14 @@
                     "Association/correlation - no causation implied",
                     "Cause-and-effect",
                     "None (I want to describe my data only)"
+                ]
+            },
+            tags: {
+                prefix: "causation",
+                subtitles: [
+                    "association (none implied)",
+                    "cause-and-effect",
+                    "none (descriptive)"
                 ]
             },
             next: "03_information"
@@ -73,6 +95,19 @@
                     "All the info you have!"
                 ]
             },
+            tags: {
+                prefix: "paper type",
+                subtitles: [
+                    "description of method",
+                    "critique",
+                    "good example",
+                    "general reference",
+                    "review/comparison/metaanalysis",
+                    "how to teach",
+                    "guide to use",
+                    ""
+                ]
+            },
             next: "04_have_designed"
         },
         {
@@ -84,6 +119,13 @@
                 options: [
                     "Yes",
                     "No"
+                ]
+            },
+            tags: {
+                prefix: "study design",
+                subtitles: [
+                    "",
+                    "a priori"
                 ]
             },
             next: "04_sample_size"
@@ -105,6 +147,13 @@
                     "No"
                 ]
             },
+            tags: {
+                prefix: "study design",
+                subtitles: [
+                    "sample size",
+                    ""
+                ]
+            },
             next: "05_repeated"
         },
         {
@@ -117,6 +166,14 @@
                     "Yes",
                     "No, everything is independent",
                     "No, the points are different items"
+                ]
+            },
+            tags: {
+                prefix: "study design",
+                subtitles: [
+                    "repeated measures/randomized block/random effects",
+                    "repeated measures/randomized block",
+                    "correlation structures"
                 ]
             },
             next: "05_relationship"
@@ -140,6 +197,13 @@
                     "Something else or I don't know"
                 ]
             },
+            tags: {
+                prefix: "relationship",
+                subtitles: [
+                    "linear",
+                    "nonlinear"
+                ]
+            },
             next: "06_report"
         },
         {
@@ -158,6 +222,21 @@
                     "Comparisons among multiple groups"
                 ]
             },
+            tags: {
+                prefix: "interpretation and meaning",
+                subtitles: [
+                    "",
+                    "confidence intervals/parameter estimation",
+                    "cross validation",
+                    "plotting",
+                    "significance",
+                    "exploratory only",
+                    "post hoc comparisons",
+                    "diagnostics",
+                    "unsupervised clustering",
+                    "effect size, variable importance, loadings"
+                ]
+            },
             next: "06_interpret"
         },
         {
@@ -174,6 +253,16 @@
                     "Statsitical significance but not meaningful results"
                 ]
             },
+            tags: {
+                prefix: "interpretation and meaning",
+                subtitles: [
+                    "statistical power",
+                    "survey/sampling bias",
+                    "meeting assumptions",
+                    "measurement error",
+                    ""
+                ]
+            },
             next: ""
         }
     ]
@@ -187,8 +276,10 @@
     let fieldset = document.getElementById("question-fieldset")
 
     let personalizedQuestionAnswerList = [];
+    let personalizedQuestionAnswerTagList = [];
     let currentQuestion = {};
     let currentAnswer = {};
+    let currentTag = {};
 
     // this is a function to create the HTML elements that the user will see for each question
     function promptQuestion(question) {
@@ -313,11 +404,43 @@
             result.answer = checkedArray;
         }
         else if (currentQuestion.input.type === "radio") {
-            let checkedArray = [];
-            let checkboxes = document.getElementsByName(`${currentQuestion.id}-options`);
-            for (let i=0; i<checkboxes.length; i++) {
-                let box = checkboxes[i];
+            let radios = document.getElementsByName(`${currentQuestion.id}-options`);
+            for (let i=0; i<radios.length; i++) {
+                let box = radios[i];
                 if(box.checked) result.answer = document.getElementById(`${currentQuestion.id}-label${i+1}`).innerText;
+            }
+        }
+        return result;
+    }
+
+    // this is a function to get the tag linked to currentAnswer, then append it to a question-answer-tag list
+    function getTagFromCurrentAnswer() {
+        console.log("getting tags...")
+        let result = {prefix: currentQuestion.tags.prefix};
+        if (currentQuestion.input.type === "text") {
+            console.log("text - no tag");
+            result.subtitles = "";
+        }
+        else if (currentQuestion.input.type === "checkbox") {
+            let subtitleArray = [];
+            for (let i=0; i<currentQuestion.input.options.length; i++) {
+                for (let j=0; j<currentAnswer.answer.length; j++) {
+                    //console.log(`${i+1}-th option: `, currentQuestion.input.options[i], `${j+1}-th currentAnswer: `, currentAnswer.answer[j]);
+                    if (currentQuestion.input.options[i] === currentAnswer.answer[j]) {
+                        console.log("tag-option: ", i+1);
+                        subtitleArray.push(currentQuestion.tags.subtitles[i]);
+                    }
+                }
+            }
+            result.subtitles = subtitleArray;
+        }
+        else if (currentQuestion.input.type === "radio") {
+            for (let i=0; i<currentQuestion.input.options.length; i++) {
+                //console.log(`${i+1}-th option: `, currentQuestion.input.options[i], `${i+1}-th currentAnswer: `, currentAnswer.answer);
+                if (currentQuestion.input.options[i] === currentAnswer.answer) {
+                    console.log("tag-option: ", i+1);
+                    result.subtitles = currentQuestion.tags.subtitles[i];
+                }
             }
         }
         return result;
@@ -388,8 +511,11 @@
 
     function moveToNextQuestion() {
         currentAnswer = getCurrentAnswer();
+        currentTag = getTagFromCurrentAnswer();
         console.log("currentAnswer: ", currentAnswer);
+        console.log("currentTag: ", currentTag);
         personalizedQuestionAnswerList.push({question: currentQuestion, answer: currentAnswer});
+        personalizedQuestionAnswerTagList.push({question: currentQuestion, answer: currentAnswer, tag: currentTag});
         clearWindow();
         let nextQuestion = getNextQuestion(currentQuestion);
         //console.log("currentQ.next: ", currentQuestion.next);
@@ -404,12 +530,15 @@
     
     function promptFinalResults() {
         clearWindow();
-        console.log("personalized list: ", personalizedQuestionAnswerList);
+        console.log("personalized list: ", personalizedQuestionAnswerTagList);
         let resultList = document.createElement('ul');
         fieldset.appendChild(resultList);
-        for (let i=0; i<personalizedQuestionAnswerList.length; i++) {
+        for (let i=0; i<personalizedQuestionAnswerTagList.length; i++) {
             let item = document.createElement('li');
-            item.innerText = "QUESTION: " + personalizedQuestionAnswerList[i].question.question + "      ANSWER: " + personalizedQuestionAnswerList[i].answer;
+            item.innerText = "QUESTION: " + personalizedQuestionAnswerTagList[i].question.question + "\n" 
+                            + "ANSWER: " + JSON.stringify(personalizedQuestionAnswerTagList[i].answer.answer) + "\n"
+                            + "TAG-prefix: " + personalizedQuestionAnswerTagList[i].tag.prefix + "\n" 
+                            + "TAG-subtitle(s): " + JSON.stringify(personalizedQuestionAnswerTagList[i].tag.subtitles) + "\n\n\n";
             resultList.appendChild(item);
         }
     }
