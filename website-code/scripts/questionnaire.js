@@ -269,19 +269,29 @@
 
     console.log(questions);
 
-    /**------------------------------------------------------------------------------------------------- */
-
-
     let form = document.getElementById("questionnaire-form")
     let fieldset = document.getElementById("question-fieldset")
-
-    let personalizedQuestionAnswerList = [];
     let personalizedQuestionAnswerTagList = [];
     let currentQuestion = {};
     let currentAnswer = {};
     let currentTag = {};
+    
+    
+    /*  ---------------------------------------------------------------------------------------------
+                                    BEGIN - FUNCTION DECLARATIONS
+        ---------------------------------------------------------------------------------------------   */
 
-    // this is a function to create the HTML elements that the user will see for each question
+    /** 
+     * This function reates and appends HTML elements for a form based on the type of input specified in a question object.
+     * @function promptQuestion
+     * @param {object} question - The question object containing information about the question and its input.
+     * @param {string} question.id - The unique ID of the question.
+     * @param {string} question.question - The text of the question.
+     * @param {object} question.input - An object containing information about the type and options for the input.
+     * @param {string} question.input.type - The type of input. Can be "text", "checkbox", or "radio".
+     * @param {string} [question.input.condition] - A condition for the input, if applicable. Currently only applies to text input.
+     * @param {string[]} [question.input.options] - An array of options for checkbox or radio input.
+     */
     function promptQuestion(question) {
         currentQuestion = question;
         let legend = document.createElement("legend")
@@ -343,7 +353,11 @@
         }
     }
     
-    // this is a function to validate the answer received for the current question so that users are required to answer before moving to next question
+    /**
+     * This function validates the answer to the current question based on the input type.
+     * @function checkIfCurrentAnswerIsValid
+     * @returns {boolean} - Returns true if the answer is valid, false if not.
+     */
     function checkIfCurrentAnswerIsValid() {
         // for text input
         if (currentQuestion.input.type === "text") {
@@ -388,7 +402,12 @@
         return true;
     }
 
-    // this is a function to get the answer from the user for each question, then append it to a question-answer list
+    /**
+     * This function retrieves the answer for the current question based on the input type, 
+     *       then appends it to the `personalizedQuestionAnswerTagList` array.
+     * @function getCurrentAnswer
+     * @returns {Object} - Returns an object containing the type of input and the answer.
+     */
     function getCurrentAnswer() {
         let result = {type: currentQuestion.input.type};
         if (currentQuestion.input.type === "text") {
@@ -413,7 +432,12 @@
         return result;
     }
 
-    // this is a function to get the tag linked to currentAnswer, then append it to a question-answer-tag list
+    /**
+     * This function retrieves the tag associated with the current answer based on the input type, 
+     *       then appends it to the personalizedQuestionAnswerTagList array.
+     * @function getTagFromCurrentAnswer
+     * @returns {Object} - Returns an object containing the prefix and subtitles of the tag.
+     */
     function getTagFromCurrentAnswer() {
         console.log("getting tags...")
         let result = {prefix: currentQuestion.tags.prefix};
@@ -446,7 +470,13 @@
         return result;
     }
 
-    // this is a function to determine whether to show question or not
+    /**
+     * This function determines whether to show a question or not based on the required field in the question object 
+     *       and the showCondition field in the question object.
+     * @function determineShowConditionOf
+     * @param {Object} question - a question object
+     * @returns {Boolean} - true if question should be shown, false if question should be skipped
+    */
     function determineShowConditionOf(question) {
             if (question.required === "Yes") return true;
 
@@ -454,7 +484,7 @@
                 let qDependsOnID = question.showCondition.questionID;
                 let qDependsOnAnswer = question.showCondition.answer;
                 console.log("q depends on ID: ", qDependsOnID, " - and answer: ", qDependsOnAnswer);
-                let qDependsOnPair = personalizedQuestionAnswerList.find(item => item.question.id === qDependsOnID)
+                let qDependsOnPair = personalizedQuestionAnswerTagList.find(item => item.question.id === qDependsOnID)
                 if (qDependsOnPair === undefined) { // question that q depends on wasn't shown in the first place
                     console.log('qDependsOnPair === undefined');
                     return false; // skip this question
@@ -482,7 +512,14 @@
             }
     }
 
-    // this is a function to get the value of the next question, to prepare it to be displayed
+    /**
+     * This function retrieves the next question to be displayed based on the `next` property of the current question. 
+     *      If the `showCondition` property of the next question is not met, the function will recursively 
+     *      call itself with the next question as the argument.
+     * @function getNextQuestion
+     * @param {Object} question - The current question object.
+     * @returns {Object} - Returns the next question object that should be displayed.
+     */
     function getNextQuestion(question) {
         let nextQ;
         for (let q of questions) {
@@ -496,25 +533,36 @@
         else return nextQ;
     }
 
-    // this is a function to remove the HTML elements created for the question after pressing next, to prepare for displaying the next question
+    /**
+     * This function removes the HTML elements created for the current question after pressing the next button,
+     *      to prepare for displaying the next question. If the next question does not exist, 
+     *      removes the questionnaire form and creates a new fieldset with a legend for a list of 
+     *      question-answer-tag triplets.
+     * @function clearWindow - 
+     */
     function clearWindow() {
         fieldset.innerHTML = "";
         if(currentQuestion.next === "") {
             document.getElementById('questionnaire-form').remove();
             fieldset = document.createElement('fieldset');
             let legend = document.createElement('legend');
-            legend.innerText = "A list of question-answer pairs";
+            legend.innerText = "A list of question-answer-tag triplets";
             fieldset.appendChild(legend);
             document.body.appendChild(fieldset);
         }
     }
 
+    /**
+     * This function retrieves the current answer, current tag, and pushes it to the personalizedQuestionAnswerTagList array.
+     *      Then, it clears the window, retrieves the next question, and prompts it.
+     *      If the current question is the final one, it changes the text and id of the button to 'End'.
+     * @function moveToNextQuestion
+     */
     function moveToNextQuestion() {
         currentAnswer = getCurrentAnswer();
         currentTag = getTagFromCurrentAnswer();
         console.log("currentAnswer: ", currentAnswer);
         console.log("currentTag: ", currentTag);
-        personalizedQuestionAnswerList.push({question: currentQuestion, answer: currentAnswer});
         personalizedQuestionAnswerTagList.push({question: currentQuestion, answer: currentAnswer, tag: currentTag});
         clearWindow();
         let nextQuestion = getNextQuestion(currentQuestion);
@@ -528,6 +576,10 @@
         }
     }
     
+    /**
+     * This function prompts the final list of question-answer-tag pairs on the page.
+     * @function promptFinalResults
+     */
     function promptFinalResults() {
         clearWindow();
         console.log("personalized list: ", personalizedQuestionAnswerTagList);
@@ -542,12 +594,23 @@
             resultList.appendChild(item);
         }
     }
-    
-    if (personalizedQuestionAnswerList.length === 0) {
+
+    /*  ---------------------------------------------------------------------------------------------
+                                    END - FUNCTION DECLARATIONS
+        ---------------------------------------------------------------------------------------------   */
+
+    /**
+     * Start prompting questions
+     */
+    if (personalizedQuestionAnswerTagList.length === 0) {
         currentQuestion = questions[0];
         promptQuestion(currentQuestion);
     }
-    
+
+    /**
+     * The submit event listener prevents the default refresh of the page upon submission
+     * and calls the `checkIfCurrentAnswerIsValid` function.
+     */
     form.addEventListener('submit', (event) => {
         event.preventDefault();
         if(checkIfCurrentAnswerIsValid()) {
