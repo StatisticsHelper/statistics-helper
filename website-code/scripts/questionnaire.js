@@ -275,6 +275,7 @@
     let currentQuestion = {};
     let currentAnswer = {};
     let currentTag = {};
+    let questionnaireFinished = false;
     
     
     /*  ---------------------------------------------------------------------------------------------
@@ -549,6 +550,7 @@
             legend.innerText = "A list of question-answer-tag triplets";
             fieldset.appendChild(legend);
             document.body.appendChild(fieldset);
+            document.body.insertBefore(fieldset, document.getElementById('exportButton'));
         }
     }
 
@@ -566,7 +568,6 @@
         personalizedQuestionAnswerTagList.push({question: currentQuestion, answer: currentAnswer, tag: currentTag});
         clearWindow();
         let nextQuestion = getNextQuestion(currentQuestion);
-        //console.log("currentQ.next: ", currentQuestion.next);
         if(currentQuestion.next !== "") promptQuestion(nextQuestion);
         if(currentQuestion.next === "") {
             console.log("FINAL QUESTION!!");
@@ -581,6 +582,11 @@
      * @function promptFinalResults
      */
     function promptFinalResults() {
+        currentAnswer = getCurrentAnswer();
+        currentTag = getTagFromCurrentAnswer();
+        console.log("currentAnswer: ", currentAnswer);
+        console.log("currentTag: ", currentTag);
+        personalizedQuestionAnswerTagList.push({question: currentQuestion, answer: currentAnswer, tag: currentTag});
         clearWindow();
         console.log("personalized list: ", personalizedQuestionAnswerTagList);
         let resultList = document.createElement('ul');
@@ -588,11 +594,12 @@
         for (let i=0; i<personalizedQuestionAnswerTagList.length; i++) {
             let item = document.createElement('li');
             item.innerText = "QUESTION: " + personalizedQuestionAnswerTagList[i].question.question + "\n" 
-                            + "ANSWER: " + JSON.stringify(personalizedQuestionAnswerTagList[i].answer.answer) + "\n"
-                            + "TAG-prefix: " + personalizedQuestionAnswerTagList[i].tag.prefix + "\n" 
-                            + "TAG-subtitle(s): " + JSON.stringify(personalizedQuestionAnswerTagList[i].tag.subtitles) + "\n\n\n";
+            + "ANSWER: " + JSON.stringify(personalizedQuestionAnswerTagList[i].answer.answer) + "\n"
+            + "TAG-prefix: " + personalizedQuestionAnswerTagList[i].tag.prefix + "\n" 
+            + "TAG-subtitle(s): " + JSON.stringify(personalizedQuestionAnswerTagList[i].tag.subtitles) + "\n\n\n";
             resultList.appendChild(item);
         }
+        questionnaireFinished = true;
     }
 
     /*  ---------------------------------------------------------------------------------------------
@@ -629,34 +636,29 @@
     
     document.getElementById('exportButton').addEventListener('click', (event) => {
         event.preventDefault();
-        
-        if (checkIfCurrentAnswerIsValid()) {
-            currentAnswer = getCurrentAnswer();
-            currentTag = getTagFromCurrentAnswer();
-            personalizedQuestionAnswerTagList.push({question: currentQuestion, answer: currentAnswer, tag: currentTag});
-            console.log("import-export - QAT list: ", personalizedQuestionAnswerTagList);
 
-            // Convert the personalizedQuestionAnswerTagList array to a JSON string
-            const jsonString = JSON.stringify(personalizedQuestionAnswerTagList);
+        console.log("import-export - QAT list: ", personalizedQuestionAnswerTagList);
 
-            // Create a link element
-            const link = document.createElement('a');
+        // Convert the personalizedQuestionAnswerTagList array to a JSON string
+        const jsonString = JSON.stringify(personalizedQuestionAnswerTagList);
 
-            // Set the link's href attribute to a data URI that contains the JSON string
-            link.href = `data:text/json;charset=utf-8,${encodeURIComponent(jsonString)}`;
+        // Create a link element
+        const link = document.createElement('a');
 
-            // Set the link's download attribute to the desired file name
-            link.download = 'personalizedQuestionAnswerTagList.json';
+        // Set the link's href attribute to a data URI that contains the JSON string
+        link.href = `data:text/json;charset=utf-8,${encodeURIComponent(jsonString)}`;
 
-            // Append the link to the document
-            document.body.appendChild(link);
+        // Set the link's download attribute to the desired file name
+        link.download = 'personalizedQuestionAnswerTagList.json';
 
-            // Use the link's click() method to trigger the download
-            link.click();
+        // Append the link to the document
+        document.body.appendChild(link);
 
-            // Remove the link from the document
-            document.body.removeChild(link);
-        }
+        // Use the link's click() method to trigger the download
+        link.click();
+
+        // Remove the link from the document
+        document.body.removeChild(link);
     })
     /*  ---------------------------------------------------------------------------------------------
                                     END - EXPORT
