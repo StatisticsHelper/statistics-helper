@@ -29,8 +29,9 @@ Click [here](https://osf.io/5y8fb/) to see project abstract.
 
 ## Future Milestones
 
-### 1) Accessible front-end
-Expected by: December 15, 2022
+### ☑️ 1) Accessible front-end
+~~Expected by: December 15, 2022~~  
+Completion date: December 28, 2022
 
 Deliverables:
 1) A UI that takes user from homepage through the questionnaire and to the page containing the list of resources.
