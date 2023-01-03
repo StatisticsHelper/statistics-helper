@@ -598,7 +598,6 @@
     /*  ---------------------------------------------------------------------------------------------
                                     END - FUNCTION DECLARATIONS
         ---------------------------------------------------------------------------------------------   */
-
     /**
      * Start prompting questions
      */
@@ -611,7 +610,7 @@
      * The submit event listener prevents the default refresh of the page upon submission
      * and calls the `checkIfCurrentAnswerIsValid` function.
      */
-    form.addEventListener('submit', (event) => {
+    document.getElementById('nextButton').addEventListener('click', (event) => {
         event.preventDefault();
         if(checkIfCurrentAnswerIsValid()) {
             if(currentQuestion.next !== "") {
@@ -622,4 +621,44 @@
             }
         }
     })
+
+
+    /*  ---------------------------------------------------------------------------------------------
+                                    BEGIN - EXPORT
+        ---------------------------------------------------------------------------------------------   */
+    
+    document.getElementById('exportButton').addEventListener('click', (event) => {
+        event.preventDefault();
+        
+        if (checkIfCurrentAnswerIsValid()) {
+            currentAnswer = getCurrentAnswer();
+            currentTag = getTagFromCurrentAnswer();
+            personalizedQuestionAnswerTagList.push({question: currentQuestion, answer: currentAnswer, tag: currentTag});
+            console.log("import-export - QAT list: ", personalizedQuestionAnswerTagList);
+
+            // Convert the personalizedQuestionAnswerTagList array to a JSON string
+            const jsonString = JSON.stringify(personalizedQuestionAnswerTagList);
+
+            // Create a link element
+            const link = document.createElement('a');
+
+            // Set the link's href attribute to a data URI that contains the JSON string
+            link.href = `data:text/json;charset=utf-8,${encodeURIComponent(jsonString)}`;
+
+            // Set the link's download attribute to the desired file name
+            link.download = 'personalizedQuestionAnswerTagList.json';
+
+            // Append the link to the document
+            document.body.appendChild(link);
+
+            // Use the link's click() method to trigger the download
+            link.click();
+
+            // Remove the link from the document
+            document.body.removeChild(link);
+        }
+    })
+    /*  ---------------------------------------------------------------------------------------------
+                                    END - EXPORT
+        ---------------------------------------------------------------------------------------------   */
 })
