@@ -1,3 +1,5 @@
+import importJson from '../website-code/scripts/import-export.js';
+
 const navIcon = document.getElementById('nav-icon');
 const navMenu = document.getElementById('nav-menu');
 
@@ -10,3 +12,5 @@ navIcon.addEventListener('click', () => {
     navMenu.style.display = 'block';
   }
 });
+
+importJson;
