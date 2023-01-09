@@ -6,277 +6,293 @@
  * the html hadn't loaded yet.
  */
 
+import {exportJson} from './import-export.js'
+
+let personalList = JSON.parse(localStorage.getItem("personalList"));
+localStorage.removeItem("personalList");
+console.log("personalized list: ", personalList);
+
+let questions = [
+    {
+        id: "00_Question",
+        question: "What is your question? Use this to guide you.",
+        required: "Yes",
+        input: {
+            type: "text",
+            condition: "maxlength='100'"
+        },
+        tags: {
+            prefix: "",
+            subtitles: []
+        },
+        next: "01_goal"
+    },
+    {
+        id: "01_goal",
+        question: "What is your goal?",
+        required: "Yes",
+        input: {
+            type: "checkbox",
+            options: [
+                "Describe a dataset's central tendencies, distribution, association, etc.",
+                "Predict values from one dataset to another",
+                "Test hypotheses",
+                "Generate hypotheses for later exploration",
+                "I don't know"
+            ]
+        },
+        tags: {
+            prefix: "goal",
+            subtitles: [
+                "descriptive",
+                "predictive",
+                "inferential",
+                "exploratory",
+                ""
+            ]
+        },
+        next: "02_relationship"
+    },
+    {
+        id: "02_relationship",
+        question: "What kind of relationship?",
+        required: "Yes",
+        input: {
+            type: "radio",
+            options: [
+                "Association/correlation - no causation implied",
+                "Cause-and-effect",
+                "None (I want to describe my data only)"
+            ]
+        },
+        tags: {
+            prefix: "causation",
+            subtitles: [
+                "association (none implied)",
+                "cause-and-effect",
+                "none (descriptive)"
+            ]
+        },
+        next: "03_information"
+    },
+    {
+        id: "03_information",
+        question: "What information do you need from the statistics helper process?",
+        required: "No",
+        showCondition: {
+            questionID: "01_goal",
+            answer: [
+                "Test hypotheses",
+                "I don't know"
+            ]
+        },
+        input: {
+            type: "checkbox",
+            options: [
+                "The math of how it works",
+                "Critiques and limitations",
+                "An example of implementation",
+                "Overview of method",
+                "Comparison of methods",
+                "How to teach the method or concepts (pedagogy)",
+                "How to implement the method",
+                "All the info you have!"
+            ]
+        },
+        tags: {
+            prefix: "paper type",
+            subtitles: [
+                "description of method",
+                "critique",
+                "good example",
+                "general reference",
+                "review/comparison/metaanalysis",
+                "how to teach",
+                "guide to use",
+                ""
+            ]
+        },
+        next: "04_have_designed"
+    },
+    {
+        id: "04_have_designed",
+        question: "Have you already collected your data or designed your data collection?",
+        required: "Yes",
+        input: {
+            type: "radio",
+            options: [
+                "Yes",
+                "No"
+            ]
+        },
+        tags: {
+            prefix: "study design",
+            subtitles: [
+                "",
+                "a priori"
+            ]
+        },
+        next: "04_sample_size"
+    },
+    {
+        id: "04_sample_size",
+        question: "Do you want to read about sample size choices?",
+        required: "Yes",
+        showCondition: {
+            questionID: "04_have_designed",
+            answer: [
+                "No"
+            ]
+        },
+        input: {
+            type: "radio",
+            options: [
+                "Yes",
+                "No"
+            ]
+        },
+        tags: {
+            prefix: "study design",
+            subtitles: [
+                "sample size",
+                ""
+            ]
+        },
+        next: "05_repeated"
+    },
+    {
+        id: "05_repeated",
+        question: "Are you measuring teh same thing more than once in time or space?",
+        required: "Yes",
+        input: {
+            type: "radio",
+            options: [
+                "Yes",
+                "No, everything is independent",
+                "No, the points are different items"
+            ]
+        },
+        tags: {
+            prefix: "study design",
+            subtitles: [
+                "repeated measures/randomized block/random effects",
+                "repeated measures/randomized block",
+                "correlation structures"
+            ]
+        },
+        next: "05_relationship"
+    },
+    {
+        id: "05_relationship",
+        question: "What relationship shape do you expect?",
+        required: "No",
+        showCondition: {
+            questionID: "02_relationship",
+            answer: [
+                "Association/correlation - no causation implied",
+                "Cause-and-effect"
+            ]
+        },
+        input: {
+            type: "radio",
+            options: [
+                "Linear",
+                "Non-linear",
+                "Something else or I don't know"
+            ]
+        },
+        tags: {
+            prefix: "relationship",
+            subtitles: [
+                "linear",
+                "nonlinear"
+            ]
+        },
+        next: "06_report"
+    },
+    {
+        id: "06_report",
+        question: "What do you need to report for your data",
+        required: "Yes",
+        input: {
+            type: "checkbox",
+            options: [
+                "I'm not sure yet - show me all possibilities",
+                "Intervals (error bars, variation, etc.)",
+                "How well this works for other things",
+                "Graphs and figures and plots!",
+                "Statistical significance (p values and test statstics)",
+                "No significance tests, I just want to see/show what it looks like",
+                "Comparisons among multiple groups"
+            ]
+        },
+        tags: {
+            prefix: "interpretation and meaning",
+            subtitles: [
+                "",
+                "confidence intervals/parameter estimation",
+                "cross validation",
+                "plotting",
+                "significance",
+                "exploratory only",
+                "post hoc comparisons",
+                "diagnostics",
+                "unsupervised clustering",
+                "effect size, variable importance, loadings"
+            ]
+        },
+        next: "06_interpret"
+    },
+    {
+        id: "06_interpret",
+        question: "What type of mistakes in interpretation are you worried about?",
+        required: "Yes",
+        input: {
+            type: "checkbox",
+            options: [
+                "Sample size or statistical power",
+                "Survey/sampling bias",
+                "Meeting assumptions of the test",
+                "Measurement error",
+                "Statsitical significance but not meaningful results"
+            ]
+        },
+        tags: {
+            prefix: "interpretation and meaning",
+            subtitles: [
+                "statistical power",
+                "survey/sampling bias",
+                "meeting assumptions",
+                "measurement error",
+                ""
+            ]
+        },
+        next: ""
+    }
+]
+console.log(questions);
+
+let fieldset = document.getElementById("question-fieldset")
+let personalizedQuestionAnswerTagList = [];
+let currentQuestion = {};
+let currentAnswer = {};
+let currentTag = {};    
+
+if (personalList !== null) {
+    personalizedQuestionAnswerTagList = personalList;
+    let nextQuestion = personalList[personalList.length - 1].question.next;
+    console.log("next is: ", nextQuestion);
+    console.log("index is: ", questions.findIndex(q => q.id === nextQuestion), questions)
+    currentQuestion = questions[questions.findIndex(q => q.id === nextQuestion)];
+    console.log("Resuming - current is: ", currentQuestion);
+}
+else {
+    currentQuestion = questions[0];
+    console.log("Starting -- current is: ", currentQuestion);
+}
+
  window.addEventListener('DOMContentLoaded', () => {
 
-    let questions = [
-        {
-            id: "00_Question",
-            question: "What is your question? Use this to guide you.",
-            required: "Yes",
-            input: {
-                type: "text",
-                condition: "maxlength='100'"
-            },
-            tags: {
-                prefix: "",
-                subtitles: []
-            },
-            next: "01_goal"
-        },
-        {
-            id: "01_goal",
-            question: "What is your goal?",
-            required: "Yes",
-            input: {
-                type: "checkbox",
-                options: [
-                    "Describe a dataset's central tendencies, distribution, association, etc.",
-                    "Predict values from one dataset to another",
-                    "Test hypotheses",
-                    "Generate hypotheses for later exploration",
-                    "I don't know"
-                ]
-            },
-            tags: {
-                prefix: "goal",
-                subtitles: [
-                    "descriptive",
-                    "predictive",
-                    "inferential",
-                    "exploratory",
-                    ""
-                ]
-            },
-            next: "02_relationship"
-        },
-        {
-            id: "02_relationship",
-            question: "What kind of relationship?",
-            required: "Yes",
-            input: {
-                type: "radio",
-                options: [
-                    "Association/correlation - no causation implied",
-                    "Cause-and-effect",
-                    "None (I want to describe my data only)"
-                ]
-            },
-            tags: {
-                prefix: "causation",
-                subtitles: [
-                    "association (none implied)",
-                    "cause-and-effect",
-                    "none (descriptive)"
-                ]
-            },
-            next: "03_information"
-        },
-        {
-            id: "03_information",
-            question: "What information do you need from the statistics helper process?",
-            required: "No",
-            showCondition: {
-                questionID: "01_goal",
-                answer: [
-                    "Test hypotheses",
-                    "I don't know"
-                ]
-            },
-            input: {
-                type: "checkbox",
-                options: [
-                    "The math of how it works",
-                    "Critiques and limitations",
-                    "An example of implementation",
-                    "Overview of method",
-                    "Comparison of methods",
-                    "How to teach the method or concepts (pedagogy)",
-                    "How to implement the method",
-                    "All the info you have!"
-                ]
-            },
-            tags: {
-                prefix: "paper type",
-                subtitles: [
-                    "description of method",
-                    "critique",
-                    "good example",
-                    "general reference",
-                    "review/comparison/metaanalysis",
-                    "how to teach",
-                    "guide to use",
-                    ""
-                ]
-            },
-            next: "04_have_designed"
-        },
-        {
-            id: "04_have_designed",
-            question: "Have you already collected your data or designed your data collection?",
-            required: "Yes",
-            input: {
-                type: "radio",
-                options: [
-                    "Yes",
-                    "No"
-                ]
-            },
-            tags: {
-                prefix: "study design",
-                subtitles: [
-                    "",
-                    "a priori"
-                ]
-            },
-            next: "04_sample_size"
-        },
-        {
-            id: "04_sample_size",
-            question: "Do you want to read about sample size choices?",
-            required: "Yes",
-            showCondition: {
-                questionID: "04_have_designed",
-                answer: [
-                    "No"
-                ]
-            },
-            input: {
-                type: "radio",
-                options: [
-                    "Yes",
-                    "No"
-                ]
-            },
-            tags: {
-                prefix: "study design",
-                subtitles: [
-                    "sample size",
-                    ""
-                ]
-            },
-            next: "05_repeated"
-        },
-        {
-            id: "05_repeated",
-            question: "Are you measuring teh same thing more than once in time or space?",
-            required: "Yes",
-            input: {
-                type: "radio",
-                options: [
-                    "Yes",
-                    "No, everything is independent",
-                    "No, the points are different items"
-                ]
-            },
-            tags: {
-                prefix: "study design",
-                subtitles: [
-                    "repeated measures/randomized block/random effects",
-                    "repeated measures/randomized block",
-                    "correlation structures"
-                ]
-            },
-            next: "05_relationship"
-        },
-        {
-            id: "05_relationship",
-            question: "What relationship shape do you expect?",
-            required: "No",
-            showCondition: {
-                questionID: "02_relationship",
-                answer: [
-                    "Association/correlation - no causation implied",
-                    "Cause-and-effect"
-                ]
-            },
-            input: {
-                type: "radio",
-                options: [
-                    "Linear",
-                    "Non-linear",
-                    "Something else or I don't know"
-                ]
-            },
-            tags: {
-                prefix: "relationship",
-                subtitles: [
-                    "linear",
-                    "nonlinear"
-                ]
-            },
-            next: "06_report"
-        },
-        {
-            id: "06_report",
-            question: "What do you need to report for your data",
-            required: "Yes",
-            input: {
-                type: "checkbox",
-                options: [
-                    "I'm not sure yet - show me all possibilities",
-                    "Intervals (error bars, variation, etc.)",
-                    "How well this works for other things",
-                    "Graphs and figures and plots!",
-                    "Statistical significance (p values and test statstics)",
-                    "No significance tests, I just want to see/show what it looks like",
-                    "Comparisons among multiple groups"
-                ]
-            },
-            tags: {
-                prefix: "interpretation and meaning",
-                subtitles: [
-                    "",
-                    "confidence intervals/parameter estimation",
-                    "cross validation",
-                    "plotting",
-                    "significance",
-                    "exploratory only",
-                    "post hoc comparisons",
-                    "diagnostics",
-                    "unsupervised clustering",
-                    "effect size, variable importance, loadings"
-                ]
-            },
-            next: "06_interpret"
-        },
-        {
-            id: "06_interpret",
-            question: "What type of mistakes in interpretation are you worried about?",
-            required: "Yes",
-            input: {
-                type: "checkbox",
-                options: [
-                    "Sample size or statistical power",
-                    "Survey/sampling bias",
-                    "Meeting assumptions of the test",
-                    "Measurement error",
-                    "Statsitical significance but not meaningful results"
-                ]
-            },
-            tags: {
-                prefix: "interpretation and meaning",
-                subtitles: [
-                    "statistical power",
-                    "survey/sampling bias",
-                    "meeting assumptions",
-                    "measurement error",
-                    ""
-                ]
-            },
-            next: ""
-        }
-    ]
-
-    console.log(questions);
-
-    let form = document.getElementById("questionnaire-form")
-    let fieldset = document.getElementById("question-fieldset")
-    let personalizedQuestionAnswerTagList = [];
-    let currentQuestion = {};
-    let currentAnswer = {};
-    let currentTag = {};
-    let questionnaireFinished = false;
-    
     
     /*  ---------------------------------------------------------------------------------------------
                                     BEGIN - FUNCTION DECLARATIONS
@@ -300,7 +316,9 @@
         legend.innerText = question.question;
 
         console.log("currentQuestion: ", question);
+        console.log("What's coming?", question.input.type);
         if (question.input.type === "text") {
+            console.log("text coming!", question.input.type);
             let input = document.createElement("input");
             input.setAttribute("type", "text");
             input.setAttribute("id", `${question.id}-text-input`)
@@ -314,12 +332,12 @@
             fieldset.appendChild(input);
         }
         else if (question.input.type === "checkbox") {
-            //console.log("checkbox coming!", question.input.type);
+            console.log("checkbox coming!", question.input.type);
             let numOptions = question.input.options.length;
             fieldset.setAttribute("required", "required");
             for (let i = 0; i < numOptions; i++) {
                 let option = question.input.options[i];
-                //console.log("option: ", option);
+                console.log("option: ", option);
                 let input = document.createElement("input");
                 input.setAttribute("type", "checkbox");
                 input.setAttribute("name", `${question.id}-options`);
@@ -334,11 +352,11 @@
             }
         }
         else if (question.input.type === "radio") {
-            //console.log("radio coming!", question.input.type);
+            console.log("radio coming!", question.input.type);
             let numOptions = question.input.options.length;
             for (let i=0; i<numOptions; i++) {
                 let option = question.input.options[i];
-                //console.log("option: ", option);
+                console.log("option: ", option);
                 let input = document.createElement("input");
                 input.setAttribute("type", "radio");
                 input.setAttribute("name", `${question.id}-options`);
@@ -599,7 +617,6 @@
             + "TAG-subtitle(s): " + JSON.stringify(personalizedQuestionAnswerTagList[i].tag.subtitles) + "\n\n\n";
             resultList.appendChild(item);
         }
-        questionnaireFinished = true;
     }
 
     /*  ---------------------------------------------------------------------------------------------
@@ -608,10 +625,7 @@
     /**
      * Start prompting questions
      */
-    if (personalizedQuestionAnswerTagList.length === 0) {
-        currentQuestion = questions[0];
-        promptQuestion(currentQuestion);
-    }
+    promptQuestion(currentQuestion);
 
     /**
      * The submit event listener prevents the default refresh of the page upon submission
@@ -629,37 +643,13 @@
         }
     })
 
-
     /*  ---------------------------------------------------------------------------------------------
                                     BEGIN - EXPORT
         ---------------------------------------------------------------------------------------------   */
-    
-    document.getElementById('exportButton').addEventListener('click', (event) => {
-        event.preventDefault();
-
-        console.log("import-export - QAT list: ", personalizedQuestionAnswerTagList);
-
-        // Convert the personalizedQuestionAnswerTagList array to a JSON string
-        const jsonString = JSON.stringify(personalizedQuestionAnswerTagList);
-
-        // Create a link element
-        const link = document.createElement('a');
-
-        // Set the link's href attribute to a data URI that contains the JSON string
-        link.href = `data:text/json;charset=utf-8,${encodeURIComponent(jsonString)}`;
-
-        // Set the link's download attribute to the desired file name
-        link.download = 'personalizedQuestionAnswerTagList.json';
-
-        // Append the link to the document
-        document.body.appendChild(link);
-
-        // Use the link's click() method to trigger the download
-        link.click();
-
-        // Remove the link from the document
-        document.body.removeChild(link);
-    })
+    document.getElementById('exportButton').addEventListener('click', (event) => { 
+        localStorage.setItem("exportList", JSON.stringify(personalizedQuestionAnswerTagList));
+        exportJson(event);
+    });
     /*  ---------------------------------------------------------------------------------------------
                                     END - EXPORT
         ---------------------------------------------------------------------------------------------   */
