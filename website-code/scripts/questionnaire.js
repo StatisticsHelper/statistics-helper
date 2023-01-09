@@ -382,7 +382,6 @@ else {
         if (currentQuestion.input.type === "text") {
             var inputField = document.querySelector('fieldset input[type=text]');
             if (inputField.value === '') {
-              alert('Please enter a value!');
               return false;
             }
         }
@@ -398,7 +397,6 @@ else {
               }
             }
             if (!checked) {
-              alert('Please select at least one option!');
               return false;
             }
         }
@@ -414,7 +412,6 @@ else {
               }
             }
             if (!checked) {
-              alert('Please select an option!');
               return false;
             }
         }
@@ -641,12 +638,27 @@ else {
                 promptFinalResults();
             }
         }
+        else if (currentQuestion.input.type === "text")         alert('Please enter a value!');
+        else if (currentQuestion.input.type === "checkbox")     alert('Please select at least one option!');
+        else if (currentQuestion.input.type === "radio")        alert('Please select an option!');
+        else                                                    alert('The question input is not any of: text, checkbox, or radio!');
     })
 
     /*  ---------------------------------------------------------------------------------------------
                                     BEGIN - EXPORT
         ---------------------------------------------------------------------------------------------   */
-    document.getElementById('exportButton').addEventListener('click', (event) => { 
+    document.getElementById('exportButton').addEventListener('click', (event) => {
+
+        console.log("exporting -- currQ: ", currentQuestion);
+
+        if(checkIfCurrentAnswerIsValid()) {
+            currentAnswer = getCurrentAnswer();
+            currentTag = getTagFromCurrentAnswer();
+            console.log("exporting -- currA: ", currentAnswer);
+            console.log("exporting -- currT: ", currentTag);
+            personalizedQuestionAnswerTagList.push({question: currentQuestion, answer: currentAnswer, tag: currentTag});
+        }
+
         localStorage.setItem("exportList", JSON.stringify(personalizedQuestionAnswerTagList));
         exportJson(event);
     });
