@@ -278,19 +278,6 @@ let currentQuestion = {};
 let currentAnswer = {};
 let currentTag = {};    
 
-if (personalList !== null) {
-    personalizedQuestionAnswerTagList = personalList;
-    let nextQuestion = personalList[personalList.length - 1].question.next;
-    console.log("next is: ", nextQuestion);
-    console.log("index is: ", questions.findIndex(q => q.id === nextQuestion), questions)
-    currentQuestion = questions[questions.findIndex(q => q.id === nextQuestion)];
-    console.log("Resuming - current is: ", currentQuestion);
-}
-else {
-    currentQuestion = questions[0];
-    console.log("Starting -- current is: ", currentQuestion);
-}
-
  window.addEventListener('DOMContentLoaded', () => {
 
     
@@ -558,7 +545,7 @@ else {
      */
     function clearWindow() {
         fieldset.innerHTML = "";
-        if(currentQuestion.next === "") {
+        if( personalizedQuestionAnswerTagList[personalizedQuestionAnswerTagList.length-1].question.next === "") {
             document.getElementById('questionnaire-form').remove();
             fieldset = document.createElement('fieldset');
             let legend = document.createElement('legend');
@@ -597,11 +584,6 @@ else {
      * @function promptFinalResults
      */
     function promptFinalResults() {
-        currentAnswer = getCurrentAnswer();
-        currentTag = getTagFromCurrentAnswer();
-        console.log("currentAnswer: ", currentAnswer);
-        console.log("currentTag: ", currentTag);
-        personalizedQuestionAnswerTagList.push({question: currentQuestion, answer: currentAnswer, tag: currentTag});
         clearWindow();
         console.log("personalized list: ", personalizedQuestionAnswerTagList);
         let resultList = document.createElement('ul');
@@ -622,19 +604,43 @@ else {
     /**
      * Start prompting questions
      */
-    promptQuestion(currentQuestion);
+    if (personalList !== null) {
+        personalizedQuestionAnswerTagList = personalList;
+        let nextQuestion = personalizedQuestionAnswerTagList[personalizedQuestionAnswerTagList.length - 1].question.next;
+        console.log("imported -- last question was: ", personalizedQuestionAnswerTagList[personalizedQuestionAnswerTagList.length - 1]);
+        console.log("personalList: ", personalList, " --- personalizedQATList: ", personalizedQuestionAnswerTagList);
+        console.log("next is: ", nextQuestion === '', nextQuestion);
+        console.log("index is: ", questions.findIndex(q => q.id === nextQuestion), questions)
+        currentQuestion = questions[questions.findIndex(q => q.id === nextQuestion)];
+        console.log("Resuming - current is: ", currentQuestion);
+        if (nextQuestion === '') {
+            promptFinalResults();
+        }
+        else promptQuestion(currentQuestion);
+    }
+    else {
+        currentQuestion = questions[0];
+        promptQuestion(currentQuestion);
+        console.log("Starting -- current is: ", currentQuestion);
+    }
+
 
     /**
      * The submit event listener prevents the default refresh of the page upon submission
      * and calls the `checkIfCurrentAnswerIsValid` function.
      */
-    document.getElementById('nextButton').addEventListener('click', (event) => {
+    document.getElementById('nextButton')?.addEventListener('click', (event) => {
         event.preventDefault();
         if(checkIfCurrentAnswerIsValid()) {
             if(currentQuestion.next !== "") {
                 moveToNextQuestion();
             }
             else {
+                currentAnswer = getCurrentAnswer();
+                currentTag = getTagFromCurrentAnswer();
+                console.log("currentAnswer: ", currentAnswer);
+                console.log("currentTag: ", currentTag);
+                personalizedQuestionAnswerTagList.push({question: currentQuestion, answer: currentAnswer, tag: currentTag});
                 promptFinalResults();
             }
         }
@@ -647,7 +653,7 @@ else {
     /*  ---------------------------------------------------------------------------------------------
                                     BEGIN - EXPORT
         ---------------------------------------------------------------------------------------------   */
-    document.getElementById('exportButton').addEventListener('click', (event) => {
+    document.getElementById('exportButton')?.addEventListener('click', (event) => {
 
         console.log("exporting -- currQ: ", currentQuestion);
 
