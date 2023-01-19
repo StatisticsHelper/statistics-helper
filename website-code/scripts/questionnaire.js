@@ -474,6 +474,23 @@ let currentTag = {};
     }
 
     /**
+     * This function adds a QAT object to personalizedQuestionAnswerTagList.
+     * I used this instead of Array.push() to check for duplicate entries.
+    * @function pushToQATList
+    * @param {Object} qat - The element to be added to the array.
+    * @returns {undefined}
+    */
+    function pushToQATList(qat) {
+        let sizeOfQATList = personalizedQuestionAnswerTagList.length;
+        if (sizeOfQATList === 0) personalizedQuestionAnswerTagList.push(qat);
+        else {
+            let duplicateFound = personalizedQuestionAnswerTagList.find(item => item.question.id === qat.question.id) !== undefined;
+            console.log("list is not empty, duplicateFound? ", duplicateFound);
+            if (duplicateFound === false) personalizedQuestionAnswerTagList.push(qat);
+        }
+    }
+
+    /**
      * This function determines whether to show a question or not based on the required field in the question object 
      *       and the showCondition field in the question object.
      * @function determineShowConditionOf
@@ -567,7 +584,7 @@ let currentTag = {};
         currentTag = getTagFromCurrentAnswer();
         console.log("currentAnswer: ", currentAnswer);
         console.log("currentTag: ", currentTag);
-        personalizedQuestionAnswerTagList.push({question: currentQuestion, answer: currentAnswer, tag: currentTag});
+        pushToQATList({question: currentQuestion, answer: currentAnswer, tag: currentTag});
         clearWindow();
         let nextQuestion = getNextQuestion(currentQuestion);
         if(currentQuestion.next !== "") promptQuestion(nextQuestion);
@@ -640,7 +657,7 @@ let currentTag = {};
                 currentTag = getTagFromCurrentAnswer();
                 console.log("currentAnswer: ", currentAnswer);
                 console.log("currentTag: ", currentTag);
-                personalizedQuestionAnswerTagList.push({question: currentQuestion, answer: currentAnswer, tag: currentTag});
+                pushToQATList({question: currentQuestion, answer: currentAnswer, tag: currentTag});
                 promptFinalResults();
             }
         }
@@ -662,7 +679,7 @@ let currentTag = {};
             currentTag = getTagFromCurrentAnswer();
             console.log("exporting -- currA: ", currentAnswer);
             console.log("exporting -- currT: ", currentTag);
-            personalizedQuestionAnswerTagList.push({question: currentQuestion, answer: currentAnswer, tag: currentTag});
+            pushToQATList({question: currentQuestion, answer: currentAnswer, tag: currentTag});
         }
 
         localStorage.setItem("exportList", JSON.stringify(personalizedQuestionAnswerTagList));
