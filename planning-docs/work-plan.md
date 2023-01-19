@@ -34,10 +34,10 @@ Click [here](https://osf.io/5y8fb/) to see project abstract.
 Completion date: December 28, 2022
 
 Deliverables:
-1) A UI that takes user from homepage through the questionnaire and to the page containing the list of resources.
+1) ☑️A UI that takes user from homepage through the questionnaire and to the page containing the list of resources.
     * For each question, the page should display the tags determined based on previously answered questions for now.
     * No import/export modules for now.
-2) The UI meets WCAG 2.1 for accessibility.
+2) ☑️The UI meets WCAG 2.1 for accessibility.
     * Developer will meet with MicroAssist consulting to test the UI for accessibility.
 
 
@@ -46,11 +46,11 @@ Deliverables:
 Expected by: February 15, 2023
 
 Deliverables:
-1) At the end of the questionnaire, users are allowed to export (download) a JSON file containing question-answer pairs.
-2) During each question, users will be allowed to export (download) the question-answer JSON file containing previously answered questions.
-3) In the home page, users are allowed to import (upload)
+1) ☑️At the end of the questionnaire, users are allowed to export (download) a JSON file containing question-answer pairs.
+2) ☑️During each question, users will be allowed to export (download) the question-answer JSON file containing previously answered questions.
+3) ☑️In the home page, users are allowed to import (upload)
 4) The UI (with import/export) meets WCAG 2.1 for accessibility.
-    * Developer will meet with MicroAssist consulting to test the UI for accessibility.
+    * ☑️Developer will meet with MicroAssist consulting to test the UI for accessibility.
 
 
 
