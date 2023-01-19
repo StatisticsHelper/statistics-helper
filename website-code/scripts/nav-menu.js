@@ -10,8 +10,10 @@ window.addEventListener('DOMContentLoaded', () => {
   
     navIcon.addEventListener('click', () => {
       if (navMenu.style.display === 'block') {
+        navIcon.setAttribute('aria-expanded', 'false');
         navMenu.style.display = 'none';
       } else {
+        navIcon.setAttribute('aria-expanded', 'true');
         navMenu.style.display = 'block';
       }
     });
