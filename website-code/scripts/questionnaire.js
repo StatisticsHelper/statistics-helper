@@ -562,7 +562,8 @@ let currentTag = {};
      */
     function clearWindow() {
         fieldset.innerHTML = "";
-        if( personalizedQuestionAnswerTagList[personalizedQuestionAnswerTagList.length-1].question.next === "") {
+        let sizeOfQATList = personalizedQuestionAnswerTagList.length;
+        if( sizeOfQATList > 0 && personalizedQuestionAnswerTagList[sizeOfQATList-1].question.next === "") {
             document.getElementById('questionnaire-form').remove();
             fieldset = document.createElement('fieldset');
             let legend = document.createElement('legend');
@@ -594,6 +595,19 @@ let currentTag = {};
             nextButton.setAttribute("id", "endButton");
             nextButton.innerText = "End";
         }
+    }
+
+    /**
+     * This function moves back to the previous question. It removes the last QAT item (of the previous question),
+     *      and prompts it again.
+     * @function moveToPreviousQuestion
+     */
+    function moveToPreviousQuestion() {
+        let prevQuestion = personalizedQuestionAnswerTagList[personalizedQuestionAnswerTagList.length-1].question;
+        personalizedQuestionAnswerTagList.pop();
+        console.log("prevQuestion: ", prevQuestion);
+        clearWindow();
+        promptQuestion(prevQuestion);
     }
     
     /**
@@ -641,11 +655,12 @@ let currentTag = {};
         console.log("Starting -- current is: ", currentQuestion);
     }
 
+    document.getElementById('previousButton')?.addEventListener('click', (event) => {
+        event.preventDefault();
+        if(personalizedQuestionAnswerTagList.length === 0) alert("Nice try, but there's no previous question!");
+        else moveToPreviousQuestion();
+    })
 
-    /**
-     * The submit event listener prevents the default refresh of the page upon submission
-     * and calls the `checkIfCurrentAnswerIsValid` function.
-     */
     document.getElementById('nextButton')?.addEventListener('click', (event) => {
         event.preventDefault();
         if(checkIfCurrentAnswerIsValid()) {
