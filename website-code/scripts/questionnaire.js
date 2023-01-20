@@ -569,8 +569,8 @@ let currentTag = {};
             let legend = document.createElement('legend');
             legend.innerText = "A list of question-answer-tag triplets";
             fieldset.appendChild(legend);
-            document.body.appendChild(fieldset);
-            document.body.insertBefore(fieldset, document.getElementById('exportButton'));
+            document.body.querySelector("main").appendChild(fieldset);
+            document.body.querySelector("main").insertBefore(fieldset, document.getElementById('exportButton'));
         }
     }
 

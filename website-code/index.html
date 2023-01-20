@@ -10,46 +10,63 @@
 
     <body>
         
-        <!--    Navigation  -->
-        <nav>
-            <button type="button" id="nav-icon" aria-expanded="false">Menu</button>
-            <ul id="nav-menu">
-                <li><a href="#">Home</a></li>
-                <li><a href="html/0-getting-started.html">Start Questionnaire</a></li>
-                <li><a href="html/all-tagged-papers.html">All Tagged Papers</a></li>
-            </ul>
-        </nav>
+        
+        <!--    Header     (navigation, title & image)  -->
+        <header aria-labelledby="header-title" style="padding-bottom: 2%; background-color:gold">
+            <!--    Navigation  -->
+            <nav>
+                <button type="button" id="nav-icon" aria-expanded="false">Menu</button>
+                <ul id="nav-menu">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="html/questionnaire.html">Start Questionnaire</a></li>
+                    <li><a href="html/all-tagged-papers.html">All Tagged Papers</a></li>
+                </ul>
+            </nav>
+            <!--    Title & Image   -->
+            <h1 id="header-title" style="text-align: center;">OU Libraries Statistics Helper</h1>         
+            <img src="assets/banner-img.png" alt="banner image" style="width: 100%; z-index: -1;">
+        </header>
 
-        <!--    Welcome     (message & image)  -->
-        <h1>Welcome to OU Libraries Statistics Helper</h1>
+        <!--    Main    -->
+        <main>
+            <h2 id="main-title">We're here to help with your research</h2>
+            <!--    Description     -->
+            <section id="description">
+                <h3 id="description-title">What is Statistics Helper?</h3>
+                <p>Statistics Helper is interactive educational website to guide users to suitable statistics for their data and goals. <br>
+                The range of books, papers, and online educational materials can be overwhelming for a researcher who is not sure where to start in analyzing their data. <br>
+                This tool ask users questions about their goals and dataset to narrow down a curated list of resources and short glossary definitions, 
+                which will be presented to the user throughout the process</p>
+            </section>
 
-        <!--    Description & other info    -->
-        <p>Statistics Helper is interactive educational website to guide users to suitable statistics for their data and goals.</p>
-        <p>The range of books, papers, and online educational materials can be overwhelming for a researcher who is not sure where to start in analyzing their data.</p>
-        <p>This tool ask users questions about their goals and dataset to narrow down a curated list of resources and short glossary definitions, which will be presented to the user throughout the process</p>
+            <!--    Get Started     -->
+            <section id="get-started">
+                <legend>Start from the beginning.</legend>
+                <a href="html/questionnaire.html">Get Started Now!</a>
+            </section>
+                
+            <!--    Resume      -->
+            <section id="resume-fieldset">
+                <legend>Resume where you left off.</legend>
+                <form id="resumeForm">
+                    <label for="json-file">Select a JSON file:</label><br>
+                    <input type="file" id="json-file" accept=".json"><br>
+                    <button type="submit" id="uploadButton">Upload</button>
+                </form>
+            </section>
 
-        <fieldset id="get-started">
-            <legend>Start from the beginning.</legend>
-            <a href="html/0-getting-started.html">Get Started Now!</a>
-        </fieldset>
-
-        <fieldset id="resume-fieldset">
-            <legend>Resume where you left off.</legend>
-            <form id="resumeForm">
-                <label for="json-file">Select a JSON file:</label><br>
-                <input type="file" id="json-file" accept=".json"><br>
-                <button type="submit" id="uploadButton">Upload</button>
-            </form>
-        </fieldset>
-
-        <fieldset id="all-tagged-papers">
-            <legend>Just looking for papers?</legend>
-            <a href="html/all-tagged-papers.html">All Tagged Papers Here</a>
-        </fieldset>
+            <!--    All tagged papers   -->
+            <section id="all-tagged-papers">
+                <legend>Just looking for papers?</legend>
+                <a href="html/all-tagged-papers.html">All Tagged Papers Here</a>
+            </section>
+        </main>
 
         <!--    footer  -->
-        <p>Footer Information Here</p>
-        <p>Sweet topping danish tiramisu toffee muffin. Ice cream lollipop liquorice fruitcake candy pudding chocolate cake sesame snaps. Tootsie roll soufflé topping powder pastry. Candy canes pastry icing marzipan sweet roll jelly-o.</p>
+        <footer aria-labelledby="footer-title">
+            <h2 id="footer-title">Footer Info</h2>
+            <p>Footer Information Here</p>
+        </footer>
         
     </body>
 </html>

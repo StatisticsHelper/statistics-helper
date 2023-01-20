@@ -15,6 +15,7 @@ window.addEventListener('DOMContentLoaded', () => {
       } else {
         navIcon.setAttribute('aria-expanded', 'true');
         navMenu.style.display = 'block';
+        document.querySelector("#nav-menu a:first-child").focus();
       }
     });
     
