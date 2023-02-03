@@ -6,6 +6,7 @@
         <title>OU Libraries Statistics Helper</title>
         <script type="module" src="scripts/nav-menu.js"></script>
         <script type="module" src="home.js"></script>
+        <link rel="stylesheet" href="styles/navigation.css">
     </head>
 
     <body>
@@ -15,6 +16,7 @@
         <header aria-labelledby="header-title" style="padding-bottom: 2%; background-color:gold">
             <!--    Navigation  -->
             <nav>
+                <a id="skip-link" href="#main-content">Skip to main content</a>
                 <button type="button" id="nav-icon" aria-expanded="false">Menu</button>
                 <ul id="nav-menu">
                     <li><a href="index.html">Home</a></li>
@@ -28,7 +30,7 @@
         </header>
 
         <!--    Main    -->
-        <main>
+        <main id="main-content">
             <h2 id="main-title">We're here to help with your research</h2>
             <!--    Description     -->
             <section id="description">

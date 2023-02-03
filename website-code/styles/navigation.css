@@ -1,0 +1,9 @@
+#skip-link {
+    position: absolute;
+    right: 100%; /* Off screen */
+}
+
+#skip-link:focus {
+    position: relative;
+    right: auto;
+}
