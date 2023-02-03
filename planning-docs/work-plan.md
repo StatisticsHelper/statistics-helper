@@ -42,15 +42,16 @@ Deliverables:
 
 
 
-### 2) Import/export functions enabled on the front-end
-Expected by: February 15, 2023
+### ☑️ 2) Import/export functions enabled on the front-end
+~Expected by: February 15, 2023~  
+Completion date: February 3, 2023
 
 Deliverables:
 1) ☑️At the end of the questionnaire, users are allowed to export (download) a JSON file containing question-answer pairs.
 2) ☑️During each question, users will be allowed to export (download) the question-answer JSON file containing previously answered questions.
 3) ☑️In the home page, users are allowed to import (upload)
-4) The UI (with import/export) meets WCAG 2.1 for accessibility.
-    * ☑️Developer will meet with MicroAssist consulting to test the UI for accessibility.
+4) ☑️The UI (with import/export) meets WCAG 2.1 for accessibility.
+    * Developer will meet with MicroAssist consulting to test the UI for accessibility.
 
 
 
