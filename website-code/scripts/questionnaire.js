@@ -11,7 +11,7 @@ import {exportJson} from './import-export.js'
 
 let personalList = JSON.parse(localStorage.getItem("personalList"));
 localStorage.removeItem("personalList");
-console.log("personalized list: ", personalList);
+// console.log("personalized list: ", personalList);
 
 let questions = [
     {
@@ -271,7 +271,7 @@ let questions = [
         next: ""
     }
 ]
-console.log(questions);
+// console.log(questions);
 
 let fieldset = document.getElementById("question-fieldset")
 let personalizedQuestionAnswerTagList = [];
@@ -303,10 +303,10 @@ let currentTag = {};
         fieldset.appendChild(legend);
         legend.innerText = question.question;
 
-        console.log("currentQuestion: ", question);
-        console.log("What's coming?", question.input.type);
+        // console.log("currentQuestion: ", question);
+        // console.log("What's coming?", question.input.type);
         if (question.input.type === "text") {
-            console.log("text coming!", question.input.type);
+            // console.log("text coming!", question.input.type);
             let input = document.createElement("input");
             input.setAttribute("type", "text");
             input.setAttribute("id", `${question.id}-text-input`)
@@ -320,12 +320,12 @@ let currentTag = {};
             fieldset.appendChild(input);
         }
         else if (question.input.type === "checkbox") {
-            console.log("checkbox coming!", question.input.type);
+            // console.log("checkbox coming!", question.input.type);
             let numOptions = question.input.options.length;
             fieldset.setAttribute("required", "required");
             for (let i = 0; i < numOptions; i++) {
                 let option = question.input.options[i];
-                console.log("option: ", option);
+                // console.log("option: ", option);
                 let input = document.createElement("input");
                 input.setAttribute("type", "checkbox");
                 input.setAttribute("name", `${question.id}-options`);
@@ -340,11 +340,11 @@ let currentTag = {};
             }
         }
         else if (question.input.type === "radio") {
-            console.log("radio coming!", question.input.type);
+            // console.log("radio coming!", question.input.type);
             let numOptions = question.input.options.length;
             for (let i=0; i<numOptions; i++) {
                 let option = question.input.options[i];
-                console.log("option: ", option);
+                // console.log("option: ", option);
                 let input = document.createElement("input");
                 input.setAttribute("type", "radio");
                 input.setAttribute("name", `${question.id}-options`);
@@ -443,19 +443,19 @@ let currentTag = {};
      * @returns {Object} - Returns an object containing the prefix and subtitles of the tag.
      */
     function getTagFromCurrentAnswer() {
-        console.log("getting tags...")
+        // console.log("getting tags...")
         let result = {prefix: currentQuestion.tags.prefix};
         if (currentQuestion.input.type === "text") {
-            console.log("text - no tag");
+            // console.log("text - no tag");
             result.subtitles = "";
         }
         else if (currentQuestion.input.type === "checkbox") {
             let subtitleArray = [];
             for (let i=0; i<currentQuestion.input.options.length; i++) {
                 for (let j=0; j<currentAnswer.answer.length; j++) {
-                    //console.log(`${i+1}-th option: `, currentQuestion.input.options[i], `${j+1}-th currentAnswer: `, currentAnswer.answer[j]);
+                    //// console.log(`${i+1}-th option: `, currentQuestion.input.options[i], `${j+1}-th currentAnswer: `, currentAnswer.answer[j]);
                     if (currentQuestion.input.options[i] === currentAnswer.answer[j]) {
-                        console.log("tag-option: ", i+1);
+                        // console.log("tag-option: ", i+1);
                         subtitleArray.push(currentQuestion.tags.subtitles[i]);
                     }
                 }
@@ -464,9 +464,9 @@ let currentTag = {};
         }
         else if (currentQuestion.input.type === "radio") {
             for (let i=0; i<currentQuestion.input.options.length; i++) {
-                //console.log(`${i+1}-th option: `, currentQuestion.input.options[i], `${i+1}-th currentAnswer: `, currentAnswer.answer);
+                //// console.log(`${i+1}-th option: `, currentQuestion.input.options[i], `${i+1}-th currentAnswer: `, currentAnswer.answer);
                 if (currentQuestion.input.options[i] === currentAnswer.answer) {
-                    console.log("tag-option: ", i+1);
+                    // console.log("tag-option: ", i+1);
                     result.subtitles = currentQuestion.tags.subtitles[i];
                 }
             }
@@ -486,7 +486,7 @@ let currentTag = {};
         if (sizeOfQATList === 0) personalizedQuestionAnswerTagList.push(qat);
         else {
             let duplicateFound = personalizedQuestionAnswerTagList.find(item => item.question.id === qat.question.id) !== undefined;
-            console.log("list is not empty, duplicateFound? ", duplicateFound);
+            // console.log("list is not empty, duplicateFound? ", duplicateFound);
             if (duplicateFound === false) personalizedQuestionAnswerTagList.push(qat);
         }
     }
@@ -504,24 +504,24 @@ let currentTag = {};
             else { // question is not required --> check showCondition
                 let qDependsOnID = question.showCondition.questionID;
                 let qDependsOnAnswer = question.showCondition.answer;
-                console.log("q depends on ID: ", qDependsOnID, " - and answer: ", qDependsOnAnswer);
+                // console.log("q depends on ID: ", qDependsOnID, " - and answer: ", qDependsOnAnswer);
                 let qDependsOnPair = personalizedQuestionAnswerTagList.find(item => item.question.id === qDependsOnID)
                 if (qDependsOnPair === undefined) { // question that q depends on wasn't shown in the first place
-                    console.log('qDependsOnPair === undefined');
+                    // console.log('qDependsOnPair === undefined');
                     return false; // skip this question
                 }
                 else { // question that q depends on was shown before
                     if (qDependsOnPair.question.input.type === 'radio' && qDependsOnAnswer.includes(qDependsOnPair.answer.answer)) {
-                        console.log("condition is met for radio!");
+                        // console.log("condition is met for radio!");
                         return true;
                     }
                     else if (qDependsOnPair.question.input.type === 'checkbox') {
-                        console.log("checking checkbox condition")
+                        // console.log("checking checkbox condition")
                         if (qDependsOnAnswer.length === qDependsOnPair.answer.answer.length // need to check if two answer arrays are equal
                             && qDependsOnAnswer.every(item => qDependsOnPair.answer.answer.includes(item))
                             && qDependsOnPair.answer.answer.every(item => qDependsOnAnswer.includes(item))
                         ) {
-                            console.log("condition is met for checkbox!");
+                            // console.log("condition is met for checkbox!");
                             return true;
                         }
                         else return false;
@@ -544,12 +544,12 @@ let currentTag = {};
     function getNextQuestion(question) {
         let nextQ;
         for (let q of questions) {
-            //console.log("q.id: ", q.id, "question.next: ", question.next);
+            //// console.log("q.id: ", q.id, "question.next: ", question.next);
             if (q.id === question.next) {
                 nextQ = q;
             }
         }
-        console.log("nextQ: ", nextQ);
+        // console.log("nextQ: ", nextQ);
         if (determineShowConditionOf(nextQ) === false) return getNextQuestion(nextQ);
         else return nextQ;
     }
@@ -584,14 +584,14 @@ let currentTag = {};
     function moveToNextQuestion() {
         currentAnswer = getCurrentAnswer();
         currentTag = getTagFromCurrentAnswer();
-        console.log("currentAnswer: ", currentAnswer);
-        console.log("currentTag: ", currentTag);
+        // console.log("currentAnswer: ", currentAnswer);
+        // console.log("currentTag: ", currentTag);
         pushToQATList({question: currentQuestion, answer: currentAnswer, tag: currentTag});
         clearWindow();
         let nextQuestion = getNextQuestion(currentQuestion);
         if(currentQuestion.next !== "") promptQuestion(nextQuestion);
         if(currentQuestion.next === "") {
-            console.log("FINAL QUESTION!!");
+            // console.log("FINAL QUESTION!!");
             let nextButton = document.getElementById("nextButton");
             nextButton.setAttribute("id", "endButton");
             nextButton.innerText = "End";
@@ -606,7 +606,7 @@ let currentTag = {};
     function moveToPreviousQuestion() {
         let prevQuestion = personalizedQuestionAnswerTagList[personalizedQuestionAnswerTagList.length-1].question;
         personalizedQuestionAnswerTagList.pop();
-        console.log("prevQuestion: ", prevQuestion);
+        // console.log("prevQuestion: ", prevQuestion);
         clearWindow();
         promptQuestion(prevQuestion);
     }
@@ -617,7 +617,7 @@ let currentTag = {};
      */
     function promptFinalResults() {
         clearWindow();
-        console.log("personalized list: ", personalizedQuestionAnswerTagList);
+        // console.log("personalized list: ", personalizedQuestionAnswerTagList);
         let resultList = document.createElement('ul');
         fieldset.appendChild(resultList);
         for (let i=0; i<personalizedQuestionAnswerTagList.length; i++) {
@@ -639,12 +639,12 @@ let currentTag = {};
     if (personalList !== null) {
         personalizedQuestionAnswerTagList = personalList;
         let nextQuestion = personalizedQuestionAnswerTagList[personalizedQuestionAnswerTagList.length - 1].question.next;
-        console.log("imported -- last question was: ", personalizedQuestionAnswerTagList[personalizedQuestionAnswerTagList.length - 1]);
-        console.log("personalList: ", personalList, " --- personalizedQATList: ", personalizedQuestionAnswerTagList);
-        console.log("next is: ", nextQuestion === '', nextQuestion);
-        console.log("index is: ", questions.findIndex(q => q.id === nextQuestion), questions)
+        // console.log("imported -- last question was: ", personalizedQuestionAnswerTagList[personalizedQuestionAnswerTagList.length - 1]);
+        // console.log("personalList: ", personalList, " --- personalizedQATList: ", personalizedQuestionAnswerTagList);
+        // console.log("next is: ", nextQuestion === '', nextQuestion);
+        // console.log("index is: ", questions.findIndex(q => q.id === nextQuestion), questions)
         currentQuestion = questions[questions.findIndex(q => q.id === nextQuestion)];
-        console.log("Resuming - current is: ", currentQuestion);
+        // console.log("Resuming - current is: ", currentQuestion);
         if (nextQuestion === '') {
             promptFinalResults();
         }
@@ -653,7 +653,7 @@ let currentTag = {};
     else {
         currentQuestion = questions[0];
         promptQuestion(currentQuestion);
-        console.log("Starting -- current is: ", currentQuestion);
+        // console.log("Starting -- current is: ", currentQuestion);
     }
 
     document.getElementById('previousButton')?.addEventListener('click', (event) => {
@@ -671,8 +671,8 @@ let currentTag = {};
             else {
                 currentAnswer = getCurrentAnswer();
                 currentTag = getTagFromCurrentAnswer();
-                console.log("currentAnswer: ", currentAnswer);
-                console.log("currentTag: ", currentTag);
+                // console.log("currentAnswer: ", currentAnswer);
+                // console.log("currentTag: ", currentTag);
                 pushToQATList({question: currentQuestion, answer: currentAnswer, tag: currentTag});
                 promptFinalResults();
             }
@@ -688,13 +688,13 @@ let currentTag = {};
         ---------------------------------------------------------------------------------------------   */
         document.getElementById('exportButton')?.addEventListener('click', (event) => {
             
-            console.log("exporting -- currQ: ", currentQuestion);
+            // console.log("exporting -- currQ: ", currentQuestion);
             
             if(checkIfCurrentAnswerIsValid()) {
                 currentAnswer = getCurrentAnswer();
                 currentTag = getTagFromCurrentAnswer();
-                console.log("exporting -- currA: ", currentAnswer);
-                console.log("exporting -- currT: ", currentTag);
+                // console.log("exporting -- currA: ", currentAnswer);
+                // console.log("exporting -- currT: ", currentTag);
                 pushToQATList({question: currentQuestion, answer: currentAnswer, tag: currentTag});
             }
             
@@ -715,11 +715,8 @@ let currentTag = {};
         const file = new File(['../pyzotero/items.pretty.json'], 'items.pretty.json', { type: 'application/json' });
 
         fetch(filePath)
-        .then(response => response.json())
-        .then(papers => {
-            // do something with the JSON data
-            console.log(papers);
-
+        .then(async response => {
+            let papers = await response.json();
             display(papers);
         })
         .catch(error => console.error("Error happened while reading Pyzotero paper list", error));
