@@ -29,13 +29,21 @@
 
         <!--    Main    -->
         <main id="main-content" aria-labelledby="main-title">
-            <h2 id="main-title">Current Question</h2>
-            <form id="questionnaire-form">
-                <fieldset id="question-fieldset">
-                </fieldset>
-                <button id="nextButton" type="submit">Next</button>
-            </form>
-            <button id="exportButton">Export</button>
+            <section>
+                <h2 id="main-title">Current Question</h2>
+                <form id="questionnaire-form">
+                    <fieldset id="question-fieldset">
+                    </fieldset>
+                    <button id="previousButton" type="submit">Previous</button>
+                    <button id="nextButton" type="submit">Next</button>
+                </form>
+                <button id="exportButton">Export</button>
+            </section>
+            <section>
+                <h2 id="relevant-papers">Relevant Papers</h2>
+                <table id="papers-table">
+                </table>
+            </section>
         </main>
 
     </body>

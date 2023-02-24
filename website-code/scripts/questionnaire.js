@@ -7,6 +7,7 @@
  */
 
 import {exportJson} from './import-export.js'
+//import { loadPyzoteroItems } from './loadPyzoteroItems.js';
 
 let personalList = JSON.parse(localStorage.getItem("personalList"));
 localStorage.removeItem("personalList");
@@ -685,22 +686,73 @@ let currentTag = {};
     /*  ---------------------------------------------------------------------------------------------
                                     BEGIN - EXPORT
         ---------------------------------------------------------------------------------------------   */
-    document.getElementById('exportButton')?.addEventListener('click', (event) => {
-
-        console.log("exporting -- currQ: ", currentQuestion);
-
-        if(checkIfCurrentAnswerIsValid()) {
-            currentAnswer = getCurrentAnswer();
-            currentTag = getTagFromCurrentAnswer();
-            console.log("exporting -- currA: ", currentAnswer);
-            console.log("exporting -- currT: ", currentTag);
-            pushToQATList({question: currentQuestion, answer: currentAnswer, tag: currentTag});
-        }
-
-        localStorage.setItem("exportList", JSON.stringify(personalizedQuestionAnswerTagList));
-        exportJson(event);
-    });
-    /*  ---------------------------------------------------------------------------------------------
+        document.getElementById('exportButton')?.addEventListener('click', (event) => {
+            
+            console.log("exporting -- currQ: ", currentQuestion);
+            
+            if(checkIfCurrentAnswerIsValid()) {
+                currentAnswer = getCurrentAnswer();
+                currentTag = getTagFromCurrentAnswer();
+                console.log("exporting -- currA: ", currentAnswer);
+                console.log("exporting -- currT: ", currentTag);
+                pushToQATList({question: currentQuestion, answer: currentAnswer, tag: currentTag});
+            }
+            
+            localStorage.setItem("exportList", JSON.stringify(personalizedQuestionAnswerTagList));
+            exportJson(event);
+        });
+        /*  ---------------------------------------------------------------------------------------------
                                     END - EXPORT
         ---------------------------------------------------------------------------------------------   */
+
+    /*  ---------------------------------------------------------------------------------------------
+                                    BEGIN - DISPLAY RELEVANT PAPERS
+        ---------------------------------------------------------------------------------------------   */
+        let papersTable = document.getElementById('papers-table');
+        
+        // set the file path
+        const filePath = '../pyzotero/items.json';
+        const file = new File(['../pyzotero/items.pretty.json'], 'items.pretty.json', { type: 'application/json' });
+
+        fetch(filePath)
+        .then(response => response.json())
+        .then(papers => {
+            // do something with the JSON data
+            console.log(papers);
+
+            display(papers);
+        })
+        .catch(error => console.error("Error happened while reading Pyzotero paper list", error));
+
+        // This function takes an array of objects
+        //  namely, papers fetched from the Pyzotero API,
+        //  and displays them on screen.
+        function display(papers) {
+            
+            let titles = papers.map (paper => paper.data.title);
+            console.log("titles: ", titles);
+
+            papers.forEach (paper => {
+
+                // create new row in the papersTable
+                let row = document.createElement('tr');
+                papersTable.appendChild(row);
+                
+                // create title cell for the row
+                let titleCell = document.createElement('td');
+                titleCell.innerHTML = `<b>Paper Name</b> <br> ${paper.data.title}`;
+                row.appendChild(titleCell);
+
+                // create rows for other relevant info
+
+                // put other rows in collapsible table
+
+                // create button to toggle display of collapsible table
+
+                // add horizontal rule to separate papers visually
+                let hrule = document.createElement('hr');
+                papersTable.appendChild(hrule);
+
+            });
+        }
 })
