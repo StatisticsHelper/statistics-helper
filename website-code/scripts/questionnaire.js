@@ -7,7 +7,6 @@
  */
 
 import {exportJson} from './import-export.js'
-//import { loadPyzoteroItems } from './loadPyzoteroItems.js';
 
 let personalList = JSON.parse(localStorage.getItem("personalList"));
 localStorage.removeItem("personalList");
@@ -708,11 +707,10 @@ let currentTag = {};
     /*  ---------------------------------------------------------------------------------------------
                                     BEGIN - DISPLAY RELEVANT PAPERS
         ---------------------------------------------------------------------------------------------   */
-        let papersTable = document.getElementById('papers-table');
+        let relevantResourcesSection = document.getElementById('relevant-resources');
         
         // set the file path
         const filePath = '../pyzotero/items.json';
-        const file = new File(['../pyzotero/items.pretty.json'], 'items.pretty.json', { type: 'application/json' });
 
         fetch(filePath)
         .then(async response => {
@@ -731,24 +729,25 @@ let currentTag = {};
 
             papers.forEach (paper => {
 
-                // create new row in the papersTable
-                let row = document.createElement('tr');
-                papersTable.appendChild(row);
-                
-                // create title cell for the row
-                let titleCell = document.createElement('td');
-                titleCell.innerHTML = `<b>Paper Name</b> <br> ${paper.data.title}`;
-                row.appendChild(titleCell);
+                // create new article for the current paper
+                let article = document.createElement('article');
+                article.setAttribute('id', `resource-${papers.indexOf(paper)}`);
+                relevantResourcesSection.appendChild(article);
 
-                // create rows for other relevant info
+                // create title for the article
+                let title = document.createElement('h3');
+                title.innerText = `${paper.data.title}`;
+                article.appendChild(title);
 
-                // put other rows in collapsible table
+                // create elements for other relevant info
+
+                // put other info in collapsible table
 
                 // create button to toggle display of collapsible table
 
                 // add horizontal rule to separate papers visually
                 let hrule = document.createElement('hr');
-                papersTable.appendChild(hrule);
+                relevantResourcesSection.appendChild(hrule);
 
             });
         }
