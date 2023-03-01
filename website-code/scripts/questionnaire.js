@@ -729,20 +729,66 @@ let currentTag = {};
 
             papers.forEach (paper => {
 
-                // create new article for the current paper
+                /**
+                 * Create new article for the current resource
+                 */
                 let article = document.createElement('article');
                 article.setAttribute('id', `resource-${papers.indexOf(paper)}`);
                 relevantResourcesSection.appendChild(article);
 
                 /**
-                 * Create title for current resource
+                 * Create header (to contain title & toggle button) for current resource
                  */
-                let title = document.createElement('h3');
-                title.innerText = `${paper.data.title}`;
-                article.appendChild(title);
+                let resourceHeader = document.createElement('h3');
+                article.appendChild(resourceHeader);
 
                 /**
-                 * Create relevant info for current resource
+                 * Create title for current resource
+                 */
+                let title = document.createElement('span');
+                title.innerText = `${paper.data.title}`;
+
+                /**
+                 * Create button to toggle display of collapsible table (relevant info, look below)
+                 */
+                let toggleInfoButton = document.createElement('button');
+                toggleInfoButton.setAttribute('id', `resource-${papers.indexOf(paper)}-toggle`);
+                toggleInfoButton.setAttribute('type', 'button');
+                toggleInfoButton.setAttribute('aria-expanded', 'false');
+                toggleInfoButton.setAttribute('aria-controls', `resource-${papers.indexOf(paper)}-info`);
+                
+                /**
+                 * Put title in toggle button, and put them both in resource header
+                 */
+                toggleInfoButton.appendChild(title);
+                resourceHeader.appendChild(toggleInfoButton);
+
+                /**
+                 * Create a table for relevant info 
+                 */
+                let resourceInfo = document.createElement('table');
+                resourceInfo.setAttribute('id', `resource-${papers.indexOf(paper)}-info`);
+                resourceInfo.setAttribute('role', 'presentation') // block screen reader from reading this as table
+                resourceInfo.setAttribute('aria-labelledby', `resource-${papers.indexOf(paper)}-toggle`);
+                resourceInfo.setAttribute('style', 'display: none');
+                article.appendChild(resourceInfo);
+
+                /**
+                 * Set button to toggle display 
+                 */
+                toggleInfoButton.addEventListener('click', () => {
+                    if (resourceInfo.style.display === 'block') {
+                        toggleInfoButton.setAttribute('aria-expanded', 'false');
+                        resourceInfo.style.display = 'none';
+                    }    
+                    else {
+                        toggleInfoButton.setAttribute('aria-expanded', 'true');
+                        resourceInfo.style.display = 'block';
+                    }    
+                })    
+
+                /**
+                 * Create relevant info for current resource 
                  */
 
                 // type
@@ -766,7 +812,7 @@ let currentTag = {};
                 let authorsSectionContent = document.createElement('p');
                 authors?.forEach(author => {
                     authorsSectionContent.innerHTML += `${author.firstName} ${author.lastName} <br>`;
-                });
+                });    
                 authorsSection.appendChild(authorsSectionContent);
 
                 // abstract
@@ -792,14 +838,6 @@ let currentTag = {};
                 yearSection.appendChild(yearSectionContent);
 
                 /**
-                 * Create a table for info 
-                 */
-                let resourceInfo = document.createElement('table');
-                resourceInfo.setAttribute('id', `resource-${papers.indexOf(paper)}-info`);
-                resourceInfo.setAttribute('role', 'presentation') // block screen reader from reading this as table
-                article.appendChild(resourceInfo);
-
-                /**
                  * Create rows for all info
                  */
                 let typeRow = document.createElement('tr');
@@ -818,8 +856,6 @@ let currentTag = {};
                 resourceInfo.appendChild(authorsRow);
                 resourceInfo.appendChild(abstractRow);
                 resourceInfo.appendChild(yearRow);
-
-                // create button to toggle display of collapsible table
 
                 // add horizontal rule to separate papers visually
                 let hrule = document.createElement('hr');
