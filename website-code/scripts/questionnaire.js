@@ -725,7 +725,7 @@ let currentTag = {};
         function display(papers) {
             
             let titles = papers.map (paper => paper.data.title);
-            console.log("titles: ", titles);
+            console.log("titles: ", papers);
 
             papers.forEach (paper => {
 
@@ -734,14 +734,90 @@ let currentTag = {};
                 article.setAttribute('id', `resource-${papers.indexOf(paper)}`);
                 relevantResourcesSection.appendChild(article);
 
-                // create title for the article
+                /**
+                 * Create title for current resource
+                 */
                 let title = document.createElement('h3');
                 title.innerText = `${paper.data.title}`;
                 article.appendChild(title);
 
-                // create elements for other relevant info
+                /**
+                 * Create relevant info for current resource
+                 */
 
-                // put other info in collapsible table
+                // type
+                let type = paper.data.itemType;
+                let typeSection = document.createElement('section');
+                typeSection.setAttribute('id', `resource-${papers.indexOf(paper)}-info-type`);
+                let typeSectionHeader = document.createElement('h4');
+                typeSectionHeader.innerText = 'Resource Type';
+                typeSection.appendChild(typeSectionHeader);
+                let typeSectionContent = document.createElement('p');
+                typeSectionContent.innerText = type;
+                typeSection.appendChild(typeSectionContent);
+
+                // authors
+                let authors = paper.data.creators;
+                let authorsSection = document.createElement('section');
+                authorsSection.setAttribute('id', `resource-${papers.indexOf(paper)}-info-authors`);
+                let authorsSectionHeader = document.createElement('h4');
+                authorsSectionHeader.innerText = 'Author(s)';
+                authorsSection.appendChild(authorsSectionHeader);
+                let authorsSectionContent = document.createElement('p');
+                authors?.forEach(author => {
+                    authorsSectionContent.innerHTML += `${author.firstName} ${author.lastName} <br>`;
+                });
+                authorsSection.appendChild(authorsSectionContent);
+
+                // abstract
+                let abstract = paper.data.abstractNote;
+                let abstractSection = document.createElement('section');
+                abstractSection.setAttribute('id', `resource-${papers.indexOf(paper)}-info-abstract`);
+                let abstractSectionHeader = document.createElement('h4');
+                abstractSectionHeader.innerText = 'Abstract';
+                abstractSection.appendChild(abstractSectionHeader);
+                let abstractSectionContent = document.createElement('p');
+                abstractSectionContent.innerText = abstract;
+                abstractSection.appendChild(abstractSectionContent);
+
+                // year
+                let year = paper.data.year;
+                let yearSection = document.createElement('section');
+                yearSection.setAttribute('id', `resource-${papers.indexOf(paper)}-info-year`);
+                let yearSectionHeader = document.createElement('h4');
+                yearSectionHeader.innerText = 'Year';
+                yearSection.appendChild(yearSectionHeader);
+                let yearSectionContent = document.createElement('p');
+                yearSectionContent.innerText = year;
+                yearSection.appendChild(yearSectionContent);
+
+                /**
+                 * Create a table for info 
+                 */
+                let resourceInfo = document.createElement('table');
+                resourceInfo.setAttribute('id', `resource-${papers.indexOf(paper)}-info`);
+                resourceInfo.setAttribute('role', 'presentation') // block screen reader from reading this as table
+                article.appendChild(resourceInfo);
+
+                /**
+                 * Create rows for all info
+                 */
+                let typeRow = document.createElement('tr');
+                typeRow.appendChild(typeSection);
+                let authorsRow = document.createElement('tr');
+                authorsRow.appendChild(authorsSection);
+                let abstractRow = document.createElement('tr');
+                abstractRow.appendChild(abstractSection);
+                let yearRow = document.createElement('tr');
+                yearRow.appendChild(yearSection);
+
+                /**
+                 * Put info rows in the table
+                 */
+                resourceInfo.appendChild(typeRow);
+                resourceInfo.appendChild(authorsRow);
+                resourceInfo.appendChild(abstractRow);
+                resourceInfo.appendChild(yearRow);
 
                 // create button to toggle display of collapsible table
 
