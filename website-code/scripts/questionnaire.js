@@ -734,12 +734,12 @@ let currentTag = {};
                 pageButton.innerText = page + 1;
                 let initialIndex = page * pageSize;
                 let finalIndex = initialIndex + pageSize - 1;
-                pageButton.addEventListener('click', () => displayRelevant(papers, initialIndex, finalIndex));
+                pageButton.addEventListener('click', () => displayRelevant(papers, page, pageSize));
                 buttonsSection.appendChild(pageButton);
             }
 
             // by default, display the first page
-            displayRelevant(papers, 0, pageSize - 1);
+            displayRelevant(papers, 0, pageSize);
         }
 
         // This function presupposes that all elements are loaded onto HTML
@@ -748,12 +748,14 @@ let currentTag = {};
         // I added two arguments so that it decides which papers to display
         //  in a paginated display system with a certain number of pages
         //  and a number of resources to display per page (e.g., 50).
-        function displayRelevant(papers, initialIndex, finalIndex) {
+        function displayRelevant(papers, page, pageSize) {
             // nothing to do if there are no resources to display
             if (!papers || papers.length === 0) {
                 console.log("No papers found");
                 return;
             }
+            let initialIndex = page * pageSize;
+            let finalIndex = initialIndex + pageSize - 1;
             let relevantPapers = papers.slice(initialIndex, finalIndex + 1);
             console.log(`began displaying ${relevantPapers.length} papers from [${initialIndex}] to [${finalIndex}]: ${relevantPapers}`);
             
@@ -775,6 +777,10 @@ let currentTag = {};
                 if (hrule != null) hrule.style.display = 'block';
             });
             console.log(`finished displaying ${relevantPapers.length} papers from [${initialIndex}] to [${relevantPapers.length - 1}]: ${relevantPapers}`);
+
+            // modify header so it shows current page number
+            let currentPageHeader = document.getElementById('relevant-resources-list-header');
+            currentPageHeader.innerText = `List of Resources (current page: ${page+1})`;
         }
 
         // This function takes an array of objects
