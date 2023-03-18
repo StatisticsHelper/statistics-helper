@@ -707,7 +707,7 @@ let currentTag = {};
     /*  ---------------------------------------------------------------------------------------------
                                     BEGIN - DISPLAY RELEVANT PAPERS
         ---------------------------------------------------------------------------------------------   */
-        let relevantResourcesSection = document.getElementById('relevant-resources');
+        let relevantResourcesSection = document.getElementById('relevant-resources-list');
         
         // set the file path
         const filePath = '../pyzotero/items.json';
@@ -716,14 +716,40 @@ let currentTag = {};
         .then(async response => {
             let papers = await response.json();
             display(papers);
-            displayRelevant(papers, 10, 19);
+            paginateDisplay(papers, 50);
+            //displayRelevant(papers, 10, 19);
         })
         .catch(error => console.error("Error happened while reading Pyzotero paper list", error));
+
+        // This function presupposes that all elements are loaded onto HTML.
+        function paginateDisplay(papers, pageSize) {
+            // figure out the number of pages
+            let numberOfPages = Math.ceil(papers.length / pageSize);
+
+            // create a button for each page
+            let buttonsSection = document.getElementById('pagination-buttons');
+            for (let page = 0; page < numberOfPages; page++) {
+                let pageButton = document.createElement('button');
+                pageButton.setAttribute('id', `page-${page+1}-button`);
+                pageButton.innerText = page + 1;
+                let initialIndex = page * pageSize;
+                let finalIndex = initialIndex + pageSize - 1;
+                pageButton.addEventListener('click', () => displayRelevant(papers, initialIndex, finalIndex));
+                buttonsSection.appendChild(pageButton);
+            }
+
+            // by default, display the first page
+            displayRelevant(papers, 0, pageSize - 1);
+        }
 
         // This function presupposes that all elements are loaded onto HTML
         //  but they're all hidden in display.
         // It shows relevant presources whenever a user clicks a page number.
+        // I added two arguments so that it decides which papers to display
+        //  in a paginated display system with a certain number of pages
+        //  and a number of resources to display per page (e.g., 50).
         function displayRelevant(papers, initialIndex, finalIndex) {
+            // nothing to do if there are no resources to display
             if (!papers || papers.length === 0) {
                 console.log("No papers found");
                 return;
@@ -754,9 +780,6 @@ let currentTag = {};
         // This function takes an array of objects
         //  namely, papers fetched from the Pyzotero API,
         //  and displays them on screen.
-        // I added two arguments so that it decides which papers to display
-        //  in a paginated display system with a certain number of pages
-        //  and a number of resources to display per page (e.g., 50).
         function display(papers) {
 
             papers.forEach (paper => {
