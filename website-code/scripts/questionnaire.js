@@ -716,16 +716,48 @@ let currentTag = {};
         .then(async response => {
             let papers = await response.json();
             display(papers);
+            displayRelevant(papers, 10, 19);
         })
         .catch(error => console.error("Error happened while reading Pyzotero paper list", error));
+
+        // This function presupposes that all elements are loaded onto HTML
+        //  but they're all hidden in display.
+        // It shows relevant presources whenever a user clicks a page number.
+        function displayRelevant(papers, initialIndex, finalIndex) {
+            if (!papers || papers.length === 0) {
+                console.log("No papers found");
+                return;
+            }
+            let relevantPapers = papers.slice(initialIndex, finalIndex + 1);
+            console.log(`began displaying ${relevantPapers.length} papers from [${initialIndex}] to [${finalIndex}]: ${relevantPapers}`);
+            
+            // first, make sure all articles are hidden
+            papers.forEach( paper => {
+                let article = document.getElementById(`resource-${papers.indexOf(paper)}`);
+                if (article != null) article.style.display = 'none';
+                let hrule = document.getElementById(`resource-${papers.indexOf(paper)}-hrule`);
+                if (hrule != null) hrule.style.display = 'none';
+            });
+            
+            // then, display only the relevant articles
+            relevantPapers.forEach( paper => {
+                console.log(`we have paper at index: ${relevantPapers.indexOf(paper)} of relevantPapers and index: ${papers.indexOf(paper)} of papers.`);
+                console.log(`displaying article at index: ${papers.indexOf(paper)}`);
+                let article = document.getElementById(`resource-${papers.indexOf(paper)}`);
+                if (article != null) article.style.display = 'block';
+                let hrule = document.getElementById(`resource-${papers.indexOf(paper)}-hrule`);
+                if (hrule != null) hrule.style.display = 'block';
+            });
+            console.log(`finished displaying ${relevantPapers.length} papers from [${initialIndex}] to [${relevantPapers.length - 1}]: ${relevantPapers}`);
+        }
 
         // This function takes an array of objects
         //  namely, papers fetched from the Pyzotero API,
         //  and displays them on screen.
+        // I added two arguments so that it decides which papers to display
+        //  in a paginated display system with a certain number of pages
+        //  and a number of resources to display per page (e.g., 50).
         function display(papers) {
-            
-            let titles = papers.map (paper => paper.data.title);
-            console.log("titles: ", papers);
 
             papers.forEach (paper => {
 
@@ -859,6 +891,7 @@ let currentTag = {};
 
                 // add horizontal rule to separate papers visually
                 let hrule = document.createElement('hr');
+                hrule.setAttribute('id', `resource-${papers.indexOf(paper)}-hrule`);
                 relevantResourcesSection.appendChild(hrule);
 
             });
