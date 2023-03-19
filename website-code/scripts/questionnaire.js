@@ -357,6 +357,9 @@ let currentTag = {};
                 fieldset.appendChild(document.createElement("br"));
             }
         }
+
+        // prompt an updated list of resources
+        promptResources();
     }
     
     /**
@@ -466,7 +469,8 @@ let currentTag = {};
                 //// console.log(`${i+1}-th option: `, currentQuestion.input.options[i], `${i+1}-th currentAnswer: `, currentAnswer.answer);
                 if (currentQuestion.input.options[i] === currentAnswer.answer) {
                     // console.log("tag-option: ", i+1);
-                    result.subtitles = currentQuestion.tags.subtitles[i];
+                    if (currentQuestion.tags.subtitles[i] === undefined) result.subtitles = '';
+                    else result.subtitles = currentQuestion.tags.subtitles[i];
                 }
             }
         }
@@ -629,6 +633,290 @@ let currentTag = {};
         }
     }
 
+    /**
+     * This function prompts the list of resources from a json file.
+     * @function promptResources
+     */
+    function promptResources() {
+        // set the file path
+        const filePath = '../pyzotero/items.json';
+
+        fetch(filePath)
+        .then(async response => {
+            let resources = await response.json();
+            //display(resources);
+            let updatedResources = updateResources(resources);
+            console.log("updatedResources: ", updatedResources);
+            paginateDisplay(updatedResources, 50);
+            //displayRelevant(resources, 10, 19);
+        })
+        .catch(error => console.error("Error happened while reading Pyzotero resource list", error));
+
+        let relevantResourcesSection = document.getElementById('relevant-resources-list');
+        
+        // This function presupposes that all elements are loaded onto HTML.
+        function paginateDisplay(resources, pageSize) {
+
+            // first, display all resources
+            let relevantResourcesListSection = document.getElementById('relevant-resources-list');
+            let resource = document.getElementById('resource-0');
+            // if it contains a resource, then it contains all
+            let allDisplayed = relevantResourcesListSection.contains(resource);
+            if (allDisplayed === false) display(resources);
+
+            // figure out the number of pages
+            let numberOfPages = Math.ceil(resources.length / pageSize);
+
+            // create a button for each page, if there are no buttons already there.
+            let buttonsSection = document.getElementById('pagination-buttons');
+            let buttonsSectionHeader = document.getElementById('pagination-buttons-header');
+            buttonsSection.innerHTML = '';
+            buttonsSection.appendChild(buttonsSectionHeader);
+            for (let page = 0; page < numberOfPages; page++) {
+                let pageButton = document.createElement('button');
+                pageButton.setAttribute('id', `page-${page+1}-button`);
+                pageButton.innerText = page + 1;
+                pageButton.addEventListener('click', () => displayRelevant(resources, page, pageSize));
+                buttonsSection.appendChild(pageButton);
+            }
+
+            // by default, display the first page
+            displayRelevant(resources, 0, pageSize);
+        }
+
+        // This function takes resources and updates them according to current tags.
+        function updateResources(resources) {
+            
+            // first, build up the current tags list
+            let resourcesTagsList = resources.map(resource => resource.data.tags);
+            console.log("tags for each resource:", resourcesTagsList);
+            
+            console.log("current QAT list: ", personalizedQuestionAnswerTagList);
+
+            let currentTagsList = [];
+            personalizedQuestionAnswerTagList.forEach(item => {
+                console.log("current tag: ", item.tag);
+                if (item.question.input.type === 'text' && item.tag.subtitles !== '') currentTagsList.push(item.tag.prefix + ': ' + item.tag.subtitles);
+                else if (item.question.input.type === 'radio' && item.tag.subtitles !== '') currentTagsList.push(item.tag.prefix + ': ' + item.tag.subtitles);
+                else if (item.question.input.type === 'checkbox') {
+                    item.tag.subtitles.forEach(subtitle => {
+                        console.log("checkbox -- subtitle is: ", subtitle, item.tag.subtitle);
+                        if (subtitle !== '') currentTagsList.push(item.tag.prefix + ': ' + subtitle);
+                    });
+                } 
+            });
+            console.log("current tags list: ", currentTagsList);
+
+            // next, filter resources based on ones that fit the current tags list
+            let updatedResources = [];
+            resources.forEach(resource => {
+                /*
+                let resourceTags = resource.data.tags.map(item => item.tag.toLowerCase());
+                //console.log("tags: ", resourceTags);
+                let containsAllTags = true;
+                currentTagsList.forEach(tag => {
+                    if (resourceTags.includes(tag) === false) {
+                        //console.log("resource: ", resource, " contains tag: ", tag);
+                        //updatedResources.splice(updatedResources.indexOf(resource), 1);
+                        containsAllTags = false;
+                    }
+                });
+                console.log("containsAllTags: ", containsAllTags);
+                if (containsAllTags) updatedResources.push(resource);
+                */
+                if (currentTagsList.every(tag => resource.data.tags.some(resourceTag => resourceTag.tag.toLowerCase().includes(tag)))) updatedResources.push(resource);
+            });
+            console.log("updatedResources: ", updatedResources.length, updatedResources.map(resource => resource.data.tags));
+
+            return updatedResources;
+        }
+
+        // This function presupposes that all elements are loaded onto HTML
+        //  but they're all hidden in display.
+        // It shows relevant presources whenever a user clicks a page number.
+        // I added two arguments so that it decides which resources to display
+        //  in a paginated display system with a certain number of pages
+        //  and a number of resources to display per page (e.g., 50).
+        function displayRelevant(resources, page, pageSize) {
+            // nothing to do if there are no resources to display
+            if (!resources || resources.length === 0) {
+                console.log("No resources found");
+                return;
+            }
+            let initialIndex = page * pageSize;
+            let finalIndex = initialIndex + pageSize - 1;
+            let relevantResources = resources.slice(initialIndex, finalIndex + 1);
+            //console.log(`began displaying ${relevantResources.length} resources from [${initialIndex}] to [${finalIndex}]: ${relevantResources}`);
+            
+            // first, make sure all articles are hidden
+            resources.forEach( resource => {
+                let article = document.getElementById(`resource-${resources.indexOf(resource)}`);
+                if (article != null) article.style.display = 'none';
+                let hrule = document.getElementById(`resource-${resources.indexOf(resource)}-hrule`);
+                if (hrule != null) hrule.style.display = 'none';
+            });
+            
+            // then, display only the relevant articles
+            relevantResources.forEach( resource => {
+                //console.log(`we have resource at index: ${relevantResources.indexOf(resource)} of relevantResources and index: ${resources.indexOf(resource)} of resources.`);
+                //console.log(`displaying article at index: ${resources.indexOf(resource)}`);
+                let article = document.getElementById(`resource-${resources.indexOf(resource)}`);
+                if (article != null) article.style.display = 'block';
+                let hrule = document.getElementById(`resource-${resources.indexOf(resource)}-hrule`);
+                if (hrule != null) hrule.style.display = 'block';
+            });
+            //console.log(`finished displaying ${relevantResources.length} resources from [${initialIndex}] to [${relevantResources.length - 1}]: ${relevantResources}`);
+
+            // modify header so it shows current page number
+            let currentPageHeader = document.getElementById('relevant-resources-list-header');
+            currentPageHeader.innerText = `List of Resources (current page: ${page+1})`;
+        }
+
+        // This function takes an array of objects
+        //  namely, resources fetched from the Pyzotero API,
+        //  and displays them on screen.
+        function display(resources) {
+
+            console.log("allPapers: ", resources.length, resources);
+            resources.forEach (resource => {
+
+                /**
+                 * Create new article for the current resource
+                 */
+                let article = document.createElement('article');
+                article.setAttribute('id', `resource-${resources.indexOf(resource)}`);
+                relevantResourcesSection.appendChild(article);
+
+                /**
+                 * Create header (to contain title & toggle button) for current resource
+                 */
+                let resourceHeader = document.createElement('h3');
+                article.appendChild(resourceHeader);
+
+                /**
+                 * Create title for current resource
+                 */
+                let title = document.createElement('span');
+                title.innerText = `${resource.data.title}`;
+
+                /**
+                 * Create button to toggle display of collapsible table (relevant info, look below)
+                 */
+                let toggleInfoButton = document.createElement('button');
+                toggleInfoButton.setAttribute('id', `resource-${resources.indexOf(resource)}-toggle`);
+                toggleInfoButton.setAttribute('type', 'button');
+                toggleInfoButton.setAttribute('aria-expanded', 'false');
+                toggleInfoButton.setAttribute('aria-controls', `resource-${resources.indexOf(resource)}-info`);
+                
+                /**
+                 * Put title in toggle button, and put them both in resource header
+                 */
+                toggleInfoButton.appendChild(title);
+                resourceHeader.appendChild(toggleInfoButton);
+
+                /**
+                 * Create a table for relevant info 
+                 */
+                let resourceInfo = document.createElement('table');
+                resourceInfo.setAttribute('id', `resource-${resources.indexOf(resource)}-info`);
+                resourceInfo.setAttribute('role', 'presentation') // block screen reader from reading this as table
+                resourceInfo.setAttribute('aria-labelledby', `resource-${resources.indexOf(resource)}-toggle`);
+                resourceInfo.setAttribute('style', 'display: none');
+                article.appendChild(resourceInfo);
+
+                /**
+                 * Set button to toggle display 
+                 */
+                toggleInfoButton.addEventListener('click', () => {
+                    if (resourceInfo.style.display === 'block') {
+                        toggleInfoButton.setAttribute('aria-expanded', 'false');
+                        resourceInfo.style.display = 'none';
+                    }    
+                    else {
+                        toggleInfoButton.setAttribute('aria-expanded', 'true');
+                        resourceInfo.style.display = 'block';
+                    }    
+                })    
+
+                /**
+                 * Create relevant info for current resource 
+                 */
+
+                // type
+                let type = resource.data.itemType;
+                let typeSection = document.createElement('section');
+                typeSection.setAttribute('id', `resource-${resources.indexOf(resource)}-info-type`);
+                let typeSectionHeader = document.createElement('h4');
+                typeSectionHeader.innerText = 'Resource Type';
+                typeSection.appendChild(typeSectionHeader);
+                let typeSectionContent = document.createElement('p');
+                typeSectionContent.innerText = type;
+                typeSection.appendChild(typeSectionContent);
+
+                // authors
+                let authors = resource.data.creators;
+                let authorsSection = document.createElement('section');
+                authorsSection.setAttribute('id', `resource-${resources.indexOf(resource)}-info-authors`);
+                let authorsSectionHeader = document.createElement('h4');
+                authorsSectionHeader.innerText = 'Author(s)';
+                authorsSection.appendChild(authorsSectionHeader);
+                let authorsSectionContent = document.createElement('p');
+                authors?.forEach(author => {
+                    authorsSectionContent.innerHTML += `${author.firstName} ${author.lastName} <br>`;
+                });    
+                authorsSection.appendChild(authorsSectionContent);
+
+                // abstract
+                let abstract = resource.data.abstractNote;
+                let abstractSection = document.createElement('section');
+                abstractSection.setAttribute('id', `resource-${resources.indexOf(resource)}-info-abstract`);
+                let abstractSectionHeader = document.createElement('h4');
+                abstractSectionHeader.innerText = 'Abstract';
+                abstractSection.appendChild(abstractSectionHeader);
+                let abstractSectionContent = document.createElement('p');
+                abstractSectionContent.innerText = abstract;
+                abstractSection.appendChild(abstractSectionContent);
+
+                // year
+                let year = resource.data.year;
+                let yearSection = document.createElement('section');
+                yearSection.setAttribute('id', `resource-${resources.indexOf(resource)}-info-year`);
+                let yearSectionHeader = document.createElement('h4');
+                yearSectionHeader.innerText = 'Year';
+                yearSection.appendChild(yearSectionHeader);
+                let yearSectionContent = document.createElement('p');
+                yearSectionContent.innerText = year;
+                yearSection.appendChild(yearSectionContent);
+
+                /**
+                 * Create rows for all info
+                 */
+                let typeRow = document.createElement('tr');
+                typeRow.appendChild(typeSection);
+                let authorsRow = document.createElement('tr');
+                authorsRow.appendChild(authorsSection);
+                let abstractRow = document.createElement('tr');
+                abstractRow.appendChild(abstractSection);
+                let yearRow = document.createElement('tr');
+                yearRow.appendChild(yearSection);
+
+                /**
+                 * Put info rows in the table
+                 */
+                resourceInfo.appendChild(typeRow);
+                resourceInfo.appendChild(authorsRow);
+                resourceInfo.appendChild(abstractRow);
+                resourceInfo.appendChild(yearRow);
+
+                // add horizontal rule to separate resources visually
+                let hrule = document.createElement('hr');
+                hrule.setAttribute('id', `resource-${resources.indexOf(resource)}-hrule`);
+                relevantResourcesSection.appendChild(hrule);
+
+            });
+        }
+    }
+
     /*  ---------------------------------------------------------------------------------------------
                                     END - FUNCTION DECLARATIONS
         ---------------------------------------------------------------------------------------------   */
@@ -707,222 +995,5 @@ let currentTag = {};
     /*  ---------------------------------------------------------------------------------------------
                                     BEGIN - DISPLAY RELEVANT PAPERS
         ---------------------------------------------------------------------------------------------   */
-        let relevantResourcesSection = document.getElementById('relevant-resources-list');
-        
-        // set the file path
-        const filePath = '../pyzotero/items.json';
 
-        fetch(filePath)
-        .then(async response => {
-            let papers = await response.json();
-            display(papers);
-            paginateDisplay(papers, 50);
-            //displayRelevant(papers, 10, 19);
-        })
-        .catch(error => console.error("Error happened while reading Pyzotero paper list", error));
-
-        // This function presupposes that all elements are loaded onto HTML.
-        function paginateDisplay(papers, pageSize) {
-            // figure out the number of pages
-            let numberOfPages = Math.ceil(papers.length / pageSize);
-
-            // create a button for each page
-            let buttonsSection = document.getElementById('pagination-buttons');
-            for (let page = 0; page < numberOfPages; page++) {
-                let pageButton = document.createElement('button');
-                pageButton.setAttribute('id', `page-${page+1}-button`);
-                pageButton.innerText = page + 1;
-                let initialIndex = page * pageSize;
-                let finalIndex = initialIndex + pageSize - 1;
-                pageButton.addEventListener('click', () => displayRelevant(papers, page, pageSize));
-                buttonsSection.appendChild(pageButton);
-            }
-
-            // by default, display the first page
-            displayRelevant(papers, 0, pageSize);
-        }
-
-        // This function presupposes that all elements are loaded onto HTML
-        //  but they're all hidden in display.
-        // It shows relevant presources whenever a user clicks a page number.
-        // I added two arguments so that it decides which papers to display
-        //  in a paginated display system with a certain number of pages
-        //  and a number of resources to display per page (e.g., 50).
-        function displayRelevant(papers, page, pageSize) {
-            // nothing to do if there are no resources to display
-            if (!papers || papers.length === 0) {
-                console.log("No papers found");
-                return;
-            }
-            let initialIndex = page * pageSize;
-            let finalIndex = initialIndex + pageSize - 1;
-            let relevantPapers = papers.slice(initialIndex, finalIndex + 1);
-            console.log(`began displaying ${relevantPapers.length} papers from [${initialIndex}] to [${finalIndex}]: ${relevantPapers}`);
-            
-            // first, make sure all articles are hidden
-            papers.forEach( paper => {
-                let article = document.getElementById(`resource-${papers.indexOf(paper)}`);
-                if (article != null) article.style.display = 'none';
-                let hrule = document.getElementById(`resource-${papers.indexOf(paper)}-hrule`);
-                if (hrule != null) hrule.style.display = 'none';
-            });
-            
-            // then, display only the relevant articles
-            relevantPapers.forEach( paper => {
-                console.log(`we have paper at index: ${relevantPapers.indexOf(paper)} of relevantPapers and index: ${papers.indexOf(paper)} of papers.`);
-                console.log(`displaying article at index: ${papers.indexOf(paper)}`);
-                let article = document.getElementById(`resource-${papers.indexOf(paper)}`);
-                if (article != null) article.style.display = 'block';
-                let hrule = document.getElementById(`resource-${papers.indexOf(paper)}-hrule`);
-                if (hrule != null) hrule.style.display = 'block';
-            });
-            console.log(`finished displaying ${relevantPapers.length} papers from [${initialIndex}] to [${relevantPapers.length - 1}]: ${relevantPapers}`);
-
-            // modify header so it shows current page number
-            let currentPageHeader = document.getElementById('relevant-resources-list-header');
-            currentPageHeader.innerText = `List of Resources (current page: ${page+1})`;
-        }
-
-        // This function takes an array of objects
-        //  namely, papers fetched from the Pyzotero API,
-        //  and displays them on screen.
-        function display(papers) {
-
-            papers.forEach (paper => {
-
-                /**
-                 * Create new article for the current resource
-                 */
-                let article = document.createElement('article');
-                article.setAttribute('id', `resource-${papers.indexOf(paper)}`);
-                relevantResourcesSection.appendChild(article);
-
-                /**
-                 * Create header (to contain title & toggle button) for current resource
-                 */
-                let resourceHeader = document.createElement('h3');
-                article.appendChild(resourceHeader);
-
-                /**
-                 * Create title for current resource
-                 */
-                let title = document.createElement('span');
-                title.innerText = `${paper.data.title}`;
-
-                /**
-                 * Create button to toggle display of collapsible table (relevant info, look below)
-                 */
-                let toggleInfoButton = document.createElement('button');
-                toggleInfoButton.setAttribute('id', `resource-${papers.indexOf(paper)}-toggle`);
-                toggleInfoButton.setAttribute('type', 'button');
-                toggleInfoButton.setAttribute('aria-expanded', 'false');
-                toggleInfoButton.setAttribute('aria-controls', `resource-${papers.indexOf(paper)}-info`);
-                
-                /**
-                 * Put title in toggle button, and put them both in resource header
-                 */
-                toggleInfoButton.appendChild(title);
-                resourceHeader.appendChild(toggleInfoButton);
-
-                /**
-                 * Create a table for relevant info 
-                 */
-                let resourceInfo = document.createElement('table');
-                resourceInfo.setAttribute('id', `resource-${papers.indexOf(paper)}-info`);
-                resourceInfo.setAttribute('role', 'presentation') // block screen reader from reading this as table
-                resourceInfo.setAttribute('aria-labelledby', `resource-${papers.indexOf(paper)}-toggle`);
-                resourceInfo.setAttribute('style', 'display: none');
-                article.appendChild(resourceInfo);
-
-                /**
-                 * Set button to toggle display 
-                 */
-                toggleInfoButton.addEventListener('click', () => {
-                    if (resourceInfo.style.display === 'block') {
-                        toggleInfoButton.setAttribute('aria-expanded', 'false');
-                        resourceInfo.style.display = 'none';
-                    }    
-                    else {
-                        toggleInfoButton.setAttribute('aria-expanded', 'true');
-                        resourceInfo.style.display = 'block';
-                    }    
-                })    
-
-                /**
-                 * Create relevant info for current resource 
-                 */
-
-                // type
-                let type = paper.data.itemType;
-                let typeSection = document.createElement('section');
-                typeSection.setAttribute('id', `resource-${papers.indexOf(paper)}-info-type`);
-                let typeSectionHeader = document.createElement('h4');
-                typeSectionHeader.innerText = 'Resource Type';
-                typeSection.appendChild(typeSectionHeader);
-                let typeSectionContent = document.createElement('p');
-                typeSectionContent.innerText = type;
-                typeSection.appendChild(typeSectionContent);
-
-                // authors
-                let authors = paper.data.creators;
-                let authorsSection = document.createElement('section');
-                authorsSection.setAttribute('id', `resource-${papers.indexOf(paper)}-info-authors`);
-                let authorsSectionHeader = document.createElement('h4');
-                authorsSectionHeader.innerText = 'Author(s)';
-                authorsSection.appendChild(authorsSectionHeader);
-                let authorsSectionContent = document.createElement('p');
-                authors?.forEach(author => {
-                    authorsSectionContent.innerHTML += `${author.firstName} ${author.lastName} <br>`;
-                });    
-                authorsSection.appendChild(authorsSectionContent);
-
-                // abstract
-                let abstract = paper.data.abstractNote;
-                let abstractSection = document.createElement('section');
-                abstractSection.setAttribute('id', `resource-${papers.indexOf(paper)}-info-abstract`);
-                let abstractSectionHeader = document.createElement('h4');
-                abstractSectionHeader.innerText = 'Abstract';
-                abstractSection.appendChild(abstractSectionHeader);
-                let abstractSectionContent = document.createElement('p');
-                abstractSectionContent.innerText = abstract;
-                abstractSection.appendChild(abstractSectionContent);
-
-                // year
-                let year = paper.data.year;
-                let yearSection = document.createElement('section');
-                yearSection.setAttribute('id', `resource-${papers.indexOf(paper)}-info-year`);
-                let yearSectionHeader = document.createElement('h4');
-                yearSectionHeader.innerText = 'Year';
-                yearSection.appendChild(yearSectionHeader);
-                let yearSectionContent = document.createElement('p');
-                yearSectionContent.innerText = year;
-                yearSection.appendChild(yearSectionContent);
-
-                /**
-                 * Create rows for all info
-                 */
-                let typeRow = document.createElement('tr');
-                typeRow.appendChild(typeSection);
-                let authorsRow = document.createElement('tr');
-                authorsRow.appendChild(authorsSection);
-                let abstractRow = document.createElement('tr');
-                abstractRow.appendChild(abstractSection);
-                let yearRow = document.createElement('tr');
-                yearRow.appendChild(yearSection);
-
-                /**
-                 * Put info rows in the table
-                 */
-                resourceInfo.appendChild(typeRow);
-                resourceInfo.appendChild(authorsRow);
-                resourceInfo.appendChild(abstractRow);
-                resourceInfo.appendChild(yearRow);
-
-                // add horizontal rule to separate papers visually
-                let hrule = document.createElement('hr');
-                hrule.setAttribute('id', `resource-${papers.indexOf(paper)}-hrule`);
-                relevantResourcesSection.appendChild(hrule);
-
-            });
-        }
 })
