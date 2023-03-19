@@ -651,270 +651,269 @@ let currentTag = {};
             //displayRelevant(resources, 10, 19);
         })
         .catch(error => console.error("Error happened while reading Pyzotero resource list", error));
+    }
 
-        let relevantResourcesSection = document.getElementById('relevant-resources-list');
+    // This function presupposes that all elements are loaded onto HTML.
+    function paginateDisplay(resources, pageSize) {
+
+        // first, display all resources
+        let relevantResourcesListSection = document.getElementById('relevant-resources-list');
+        let relevantResourcesListSectionHeader = document.getElementById('relevant-resources-list-header');
+        relevantResourcesListSection.innerHTML = '';
+        relevantResourcesListSection.appendChild(relevantResourcesListSectionHeader);
+        display(resources);
         
-        // This function presupposes that all elements are loaded onto HTML.
-        function paginateDisplay(resources, pageSize) {
+        // figure out the number of pages
+        let numberOfPages = Math.ceil(resources.length / pageSize);
 
-            // first, display all resources
-            let relevantResourcesListSection = document.getElementById('relevant-resources-list');
-            let resource = document.getElementById('resource-0');
-            // if it contains a resource, then it contains all
-            let allDisplayed = relevantResourcesListSection.contains(resource);
-            if (allDisplayed === false) display(resources);
-
-            // figure out the number of pages
-            let numberOfPages = Math.ceil(resources.length / pageSize);
-
-            // create a button for each page, if there are no buttons already there.
-            let buttonsSection = document.getElementById('pagination-buttons');
-            let buttonsSectionHeader = document.getElementById('pagination-buttons-header');
-            buttonsSection.innerHTML = '';
-            buttonsSection.appendChild(buttonsSectionHeader);
-            for (let page = 0; page < numberOfPages; page++) {
-                let pageButton = document.createElement('button');
-                pageButton.setAttribute('id', `page-${page+1}-button`);
-                pageButton.innerText = page + 1;
-                pageButton.addEventListener('click', () => displayRelevant(resources, page, pageSize));
-                buttonsSection.appendChild(pageButton);
-            }
-
-            // by default, display the first page
-            displayRelevant(resources, 0, pageSize);
+        // create a button for each page, if there are no buttons already there.
+        let buttonsSection = document.getElementById('pagination-buttons');
+        let buttonsSectionHeader = document.getElementById('pagination-buttons-header');
+        buttonsSection.innerHTML = '';
+        buttonsSection.appendChild(buttonsSectionHeader);
+        for (let page = 0; page < numberOfPages; page++) {
+            let pageButton = document.createElement('button');
+            pageButton.setAttribute('id', `page-${page+1}-button`);
+            pageButton.innerText = page + 1;
+            pageButton.addEventListener('click', () => displayRelevant(resources, page, pageSize));
+            buttonsSection.appendChild(pageButton);
         }
 
-        // This function takes resources and updates them according to current tags.
-        function updateResources(resources) {
-            
-            // first, build up the current tags list
-            let resourcesTagsList = resources.map(resource => resource.data.tags);
-            console.log("tags for each resource:", resourcesTagsList);
-            
-            console.log("current QAT list: ", personalizedQuestionAnswerTagList);
+        // by default, display the first page
+        displayRelevant(resources, 0, pageSize);
+    }
 
-            let currentTagsList = [];
-            personalizedQuestionAnswerTagList.forEach(item => {
-                console.log("current tag: ", item.tag);
-                if (item.question.input.type === 'text' && item.tag.subtitles !== '') currentTagsList.push(item.tag.prefix + ': ' + item.tag.subtitles);
-                else if (item.question.input.type === 'radio' && item.tag.subtitles !== '') currentTagsList.push(item.tag.prefix + ': ' + item.tag.subtitles);
-                else if (item.question.input.type === 'checkbox') {
-                    item.tag.subtitles.forEach(subtitle => {
-                        console.log("checkbox -- subtitle is: ", subtitle, item.tag.subtitle);
-                        if (subtitle !== '') currentTagsList.push(item.tag.prefix + ': ' + subtitle);
-                    });
-                } 
-            });
-            console.log("current tags list: ", currentTagsList);
+    // This function takes resources and updates them according to current tags.
+    function updateResources(resources) {
+        
+        // first, build up the current tags list
+        let resourcesTagsList = resources.map(resource => resource.data.tags);
+        console.log("tags for each resource:", resourcesTagsList);
+        
+        console.log("current QAT list: ", personalizedQuestionAnswerTagList);
 
-            // next, filter resources based on ones that fit the current tags list
-            let updatedResources = [];
-            resources.forEach(resource => {
-                /*
-                let resourceTags = resource.data.tags.map(item => item.tag.toLowerCase());
-                //console.log("tags: ", resourceTags);
-                let containsAllTags = true;
-                currentTagsList.forEach(tag => {
-                    if (resourceTags.includes(tag) === false) {
-                        //console.log("resource: ", resource, " contains tag: ", tag);
-                        //updatedResources.splice(updatedResources.indexOf(resource), 1);
-                        containsAllTags = false;
-                    }
+        let currentTagsList = [];
+        personalizedQuestionAnswerTagList.forEach(item => {
+            console.log("current tag: ", item.tag);
+            if (item.question.input.type === 'text' && item.tag.subtitles !== '') currentTagsList.push(item.tag.prefix + ': ' + item.tag.subtitles);
+            else if (item.question.input.type === 'radio' && item.tag.subtitles !== '') currentTagsList.push(item.tag.prefix + ': ' + item.tag.subtitles);
+            else if (item.question.input.type === 'checkbox') {
+                item.tag.subtitles.forEach(subtitle => {
+                    console.log("checkbox -- subtitle is: ", subtitle, item.tag.subtitle);
+                    if (subtitle !== '') currentTagsList.push(item.tag.prefix + ': ' + subtitle);
                 });
-                console.log("containsAllTags: ", containsAllTags);
-                if (containsAllTags) updatedResources.push(resource);
-                */
-                if (currentTagsList.every(tag => resource.data.tags.some(resourceTag => resourceTag.tag.toLowerCase().includes(tag)))) updatedResources.push(resource);
+            } 
+        });
+        console.log("current tags list: ", currentTagsList);
+
+        // next, filter resources based on ones that fit the current tags list
+        let updatedResources = [];
+        resources.forEach(resource => {
+            /*
+            let resourceTags = resource.data.tags.map(item => item.tag.toLowerCase());
+            //console.log("tags: ", resourceTags);
+            let containsAllTags = true;
+            currentTagsList.forEach(tag => {
+                if (resourceTags.includes(tag) === false) {
+                    //console.log("resource: ", resource, " contains tag: ", tag);
+                    //updatedResources.splice(updatedResources.indexOf(resource), 1);
+                    containsAllTags = false;
+                }
             });
-            console.log("updatedResources: ", updatedResources.length, updatedResources.map(resource => resource.data.tags));
+            console.log("containsAllTags: ", containsAllTags);
+            if (containsAllTags) updatedResources.push(resource);
+            */
+            if (currentTagsList.every(tag => resource.data.tags.some(resourceTag => resourceTag.tag.toLowerCase().includes(tag)))) updatedResources.push(resource);
+        });
+        console.log("updatedResources: ", updatedResources.length, updatedResources.map(resource => resource.data.tags));
 
-            return updatedResources;
+        return updatedResources;
+    }
+
+    // This function presupposes that all elements are loaded onto HTML
+    //  but they're all hidden in display.
+    // It shows relevant presources whenever a user clicks a page number.
+    // I added two arguments so that it decides which resources to display
+    //  in a paginated display system with a certain number of pages
+    //  and a number of resources to display per page (e.g., 50).
+    function displayRelevant(resources, page, pageSize) {
+        // nothing to do if there are no resources to display
+        if (!resources || resources.length === 0) {
+            console.log("No resources found");
+            return;
         }
+        let initialIndex = page * pageSize;
+        let finalIndex = initialIndex + pageSize - 1;
+        let relevantResources = resources.slice(initialIndex, finalIndex + 1);
+        //console.log(`began displaying ${relevantResources.length} resources from [${initialIndex}] to [${finalIndex}]: ${relevantResources}`);
+        
+        // first, make sure all articles are hidden
+        resources.forEach( resource => {
+            let article = document.getElementById(`resource-${resources.indexOf(resource)}`);
+            if (article != null) article.style.display = 'none';
+            let hrule = document.getElementById(`resource-${resources.indexOf(resource)}-hrule`);
+            if (hrule != null) hrule.style.display = 'none';
+        });
+        
+        // then, display only the relevant articles
+        relevantResources.forEach( resource => {
+            //console.log(`we have resource at index: ${relevantResources.indexOf(resource)} of relevantResources and index: ${resources.indexOf(resource)} of resources.`);
+            //console.log(`displaying article at index: ${resources.indexOf(resource)}`);
+            let article = document.getElementById(`resource-${resources.indexOf(resource)}`);
+            if (article != null) article.style.display = 'block';
+            let hrule = document.getElementById(`resource-${resources.indexOf(resource)}-hrule`);
+            if (hrule != null) hrule.style.display = 'block';
+        });
+        //console.log(`finished displaying ${relevantResources.length} resources from [${initialIndex}] to [${relevantResources.length - 1}]: ${relevantResources}`);
 
-        // This function presupposes that all elements are loaded onto HTML
-        //  but they're all hidden in display.
-        // It shows relevant presources whenever a user clicks a page number.
-        // I added two arguments so that it decides which resources to display
-        //  in a paginated display system with a certain number of pages
-        //  and a number of resources to display per page (e.g., 50).
-        function displayRelevant(resources, page, pageSize) {
-            // nothing to do if there are no resources to display
-            if (!resources || resources.length === 0) {
-                console.log("No resources found");
-                return;
-            }
-            let initialIndex = page * pageSize;
-            let finalIndex = initialIndex + pageSize - 1;
-            let relevantResources = resources.slice(initialIndex, finalIndex + 1);
-            //console.log(`began displaying ${relevantResources.length} resources from [${initialIndex}] to [${finalIndex}]: ${relevantResources}`);
+        // modify header so it shows current page number
+        let currentPageHeader = document.getElementById('relevant-resources-list-header');
+        currentPageHeader.innerText = `List of Resources (current page: ${page+1})`;
+    }
+
+    // This function takes an array of objects
+    //  namely, resources fetched from the Pyzotero API,
+    //  and displays them on screen.
+    function display(resources) {
+
+        console.log("allPapers: ", resources.length, resources);
+        let relevantResourcesSection = document.getElementById('relevant-resources-list');      
+        resources.forEach (resource => {
+
+            /**
+             * Create new article for the current resource
+             */
+            let article = document.createElement('article');
+            article.setAttribute('id', `resource-${resources.indexOf(resource)}`);
+            relevantResourcesSection.appendChild(article);
+
+            /**
+             * Create header (to contain title & toggle button) for current resource
+             */
+            let resourceHeader = document.createElement('h3');
+            article.appendChild(resourceHeader);
+
+            /**
+             * Create title for current resource
+             */
+            let title = document.createElement('span');
+            title.innerText = `${resource.data.title}`;
+
+            /**
+             * Create button to toggle display of collapsible table (relevant info, look below)
+             */
+            let toggleInfoButton = document.createElement('button');
+            toggleInfoButton.setAttribute('id', `resource-${resources.indexOf(resource)}-toggle`);
+            toggleInfoButton.setAttribute('type', 'button');
+            toggleInfoButton.setAttribute('aria-expanded', 'false');
+            toggleInfoButton.setAttribute('aria-controls', `resource-${resources.indexOf(resource)}-info`);
             
-            // first, make sure all articles are hidden
-            resources.forEach( resource => {
-                let article = document.getElementById(`resource-${resources.indexOf(resource)}`);
-                if (article != null) article.style.display = 'none';
-                let hrule = document.getElementById(`resource-${resources.indexOf(resource)}-hrule`);
-                if (hrule != null) hrule.style.display = 'none';
-            });
-            
-            // then, display only the relevant articles
-            relevantResources.forEach( resource => {
-                //console.log(`we have resource at index: ${relevantResources.indexOf(resource)} of relevantResources and index: ${resources.indexOf(resource)} of resources.`);
-                //console.log(`displaying article at index: ${resources.indexOf(resource)}`);
-                let article = document.getElementById(`resource-${resources.indexOf(resource)}`);
-                if (article != null) article.style.display = 'block';
-                let hrule = document.getElementById(`resource-${resources.indexOf(resource)}-hrule`);
-                if (hrule != null) hrule.style.display = 'block';
-            });
-            //console.log(`finished displaying ${relevantResources.length} resources from [${initialIndex}] to [${relevantResources.length - 1}]: ${relevantResources}`);
+            /**
+             * Put title in toggle button, and put them both in resource header
+             */
+            toggleInfoButton.appendChild(title);
+            resourceHeader.appendChild(toggleInfoButton);
 
-            // modify header so it shows current page number
-            let currentPageHeader = document.getElementById('relevant-resources-list-header');
-            currentPageHeader.innerText = `List of Resources (current page: ${page+1})`;
-        }
+            /**
+             * Create a table for relevant info 
+             */
+            let resourceInfo = document.createElement('table');
+            resourceInfo.setAttribute('id', `resource-${resources.indexOf(resource)}-info`);
+            resourceInfo.setAttribute('role', 'presentation') // block screen reader from reading this as table
+            resourceInfo.setAttribute('aria-labelledby', `resource-${resources.indexOf(resource)}-toggle`);
+            resourceInfo.setAttribute('style', 'display: none');
+            article.appendChild(resourceInfo);
 
-        // This function takes an array of objects
-        //  namely, resources fetched from the Pyzotero API,
-        //  and displays them on screen.
-        function display(resources) {
+            /**
+             * Set button to toggle display 
+             */
+            toggleInfoButton.addEventListener('click', () => {
+                if (resourceInfo.style.display === 'block') {
+                    toggleInfoButton.setAttribute('aria-expanded', 'false');
+                    resourceInfo.style.display = 'none';
+                }    
+                else {
+                    toggleInfoButton.setAttribute('aria-expanded', 'true');
+                    resourceInfo.style.display = 'block';
+                }    
+            })    
 
-            console.log("allPapers: ", resources.length, resources);
-            resources.forEach (resource => {
+            /**
+             * Create relevant info for current resource 
+             */
 
-                /**
-                 * Create new article for the current resource
-                 */
-                let article = document.createElement('article');
-                article.setAttribute('id', `resource-${resources.indexOf(resource)}`);
-                relevantResourcesSection.appendChild(article);
+            // type
+            let type = resource.data.itemType;
+            let typeSection = document.createElement('section');
+            typeSection.setAttribute('id', `resource-${resources.indexOf(resource)}-info-type`);
+            let typeSectionHeader = document.createElement('h4');
+            typeSectionHeader.innerText = 'Resource Type';
+            typeSection.appendChild(typeSectionHeader);
+            let typeSectionContent = document.createElement('p');
+            typeSectionContent.innerText = type;
+            typeSection.appendChild(typeSectionContent);
 
-                /**
-                 * Create header (to contain title & toggle button) for current resource
-                 */
-                let resourceHeader = document.createElement('h3');
-                article.appendChild(resourceHeader);
+            // authors
+            let authors = resource.data.creators;
+            let authorsSection = document.createElement('section');
+            authorsSection.setAttribute('id', `resource-${resources.indexOf(resource)}-info-authors`);
+            let authorsSectionHeader = document.createElement('h4');
+            authorsSectionHeader.innerText = 'Author(s)';
+            authorsSection.appendChild(authorsSectionHeader);
+            let authorsSectionContent = document.createElement('p');
+            authors?.forEach(author => {
+                authorsSectionContent.innerHTML += `${author.firstName} ${author.lastName} <br>`;
+            });    
+            authorsSection.appendChild(authorsSectionContent);
 
-                /**
-                 * Create title for current resource
-                 */
-                let title = document.createElement('span');
-                title.innerText = `${resource.data.title}`;
+            // abstract
+            let abstract = resource.data.abstractNote;
+            let abstractSection = document.createElement('section');
+            abstractSection.setAttribute('id', `resource-${resources.indexOf(resource)}-info-abstract`);
+            let abstractSectionHeader = document.createElement('h4');
+            abstractSectionHeader.innerText = 'Abstract';
+            abstractSection.appendChild(abstractSectionHeader);
+            let abstractSectionContent = document.createElement('p');
+            abstractSectionContent.innerText = abstract;
+            abstractSection.appendChild(abstractSectionContent);
 
-                /**
-                 * Create button to toggle display of collapsible table (relevant info, look below)
-                 */
-                let toggleInfoButton = document.createElement('button');
-                toggleInfoButton.setAttribute('id', `resource-${resources.indexOf(resource)}-toggle`);
-                toggleInfoButton.setAttribute('type', 'button');
-                toggleInfoButton.setAttribute('aria-expanded', 'false');
-                toggleInfoButton.setAttribute('aria-controls', `resource-${resources.indexOf(resource)}-info`);
-                
-                /**
-                 * Put title in toggle button, and put them both in resource header
-                 */
-                toggleInfoButton.appendChild(title);
-                resourceHeader.appendChild(toggleInfoButton);
+            // year
+            let year = resource.data.year;
+            let yearSection = document.createElement('section');
+            yearSection.setAttribute('id', `resource-${resources.indexOf(resource)}-info-year`);
+            let yearSectionHeader = document.createElement('h4');
+            yearSectionHeader.innerText = 'Year';
+            yearSection.appendChild(yearSectionHeader);
+            let yearSectionContent = document.createElement('p');
+            yearSectionContent.innerText = year;
+            yearSection.appendChild(yearSectionContent);
 
-                /**
-                 * Create a table for relevant info 
-                 */
-                let resourceInfo = document.createElement('table');
-                resourceInfo.setAttribute('id', `resource-${resources.indexOf(resource)}-info`);
-                resourceInfo.setAttribute('role', 'presentation') // block screen reader from reading this as table
-                resourceInfo.setAttribute('aria-labelledby', `resource-${resources.indexOf(resource)}-toggle`);
-                resourceInfo.setAttribute('style', 'display: none');
-                article.appendChild(resourceInfo);
+            /**
+             * Create rows for all info
+             */
+            let typeRow = document.createElement('tr');
+            typeRow.appendChild(typeSection);
+            let authorsRow = document.createElement('tr');
+            authorsRow.appendChild(authorsSection);
+            let abstractRow = document.createElement('tr');
+            abstractRow.appendChild(abstractSection);
+            let yearRow = document.createElement('tr');
+            yearRow.appendChild(yearSection);
 
-                /**
-                 * Set button to toggle display 
-                 */
-                toggleInfoButton.addEventListener('click', () => {
-                    if (resourceInfo.style.display === 'block') {
-                        toggleInfoButton.setAttribute('aria-expanded', 'false');
-                        resourceInfo.style.display = 'none';
-                    }    
-                    else {
-                        toggleInfoButton.setAttribute('aria-expanded', 'true');
-                        resourceInfo.style.display = 'block';
-                    }    
-                })    
+            /**
+             * Put info rows in the table
+             */
+            resourceInfo.appendChild(typeRow);
+            resourceInfo.appendChild(authorsRow);
+            resourceInfo.appendChild(abstractRow);
+            resourceInfo.appendChild(yearRow);
 
-                /**
-                 * Create relevant info for current resource 
-                 */
+            // add horizontal rule to separate resources visually
+            let hrule = document.createElement('hr');
+            hrule.setAttribute('id', `resource-${resources.indexOf(resource)}-hrule`);
+            relevantResourcesSection.appendChild(hrule);
 
-                // type
-                let type = resource.data.itemType;
-                let typeSection = document.createElement('section');
-                typeSection.setAttribute('id', `resource-${resources.indexOf(resource)}-info-type`);
-                let typeSectionHeader = document.createElement('h4');
-                typeSectionHeader.innerText = 'Resource Type';
-                typeSection.appendChild(typeSectionHeader);
-                let typeSectionContent = document.createElement('p');
-                typeSectionContent.innerText = type;
-                typeSection.appendChild(typeSectionContent);
-
-                // authors
-                let authors = resource.data.creators;
-                let authorsSection = document.createElement('section');
-                authorsSection.setAttribute('id', `resource-${resources.indexOf(resource)}-info-authors`);
-                let authorsSectionHeader = document.createElement('h4');
-                authorsSectionHeader.innerText = 'Author(s)';
-                authorsSection.appendChild(authorsSectionHeader);
-                let authorsSectionContent = document.createElement('p');
-                authors?.forEach(author => {
-                    authorsSectionContent.innerHTML += `${author.firstName} ${author.lastName} <br>`;
-                });    
-                authorsSection.appendChild(authorsSectionContent);
-
-                // abstract
-                let abstract = resource.data.abstractNote;
-                let abstractSection = document.createElement('section');
-                abstractSection.setAttribute('id', `resource-${resources.indexOf(resource)}-info-abstract`);
-                let abstractSectionHeader = document.createElement('h4');
-                abstractSectionHeader.innerText = 'Abstract';
-                abstractSection.appendChild(abstractSectionHeader);
-                let abstractSectionContent = document.createElement('p');
-                abstractSectionContent.innerText = abstract;
-                abstractSection.appendChild(abstractSectionContent);
-
-                // year
-                let year = resource.data.year;
-                let yearSection = document.createElement('section');
-                yearSection.setAttribute('id', `resource-${resources.indexOf(resource)}-info-year`);
-                let yearSectionHeader = document.createElement('h4');
-                yearSectionHeader.innerText = 'Year';
-                yearSection.appendChild(yearSectionHeader);
-                let yearSectionContent = document.createElement('p');
-                yearSectionContent.innerText = year;
-                yearSection.appendChild(yearSectionContent);
-
-                /**
-                 * Create rows for all info
-                 */
-                let typeRow = document.createElement('tr');
-                typeRow.appendChild(typeSection);
-                let authorsRow = document.createElement('tr');
-                authorsRow.appendChild(authorsSection);
-                let abstractRow = document.createElement('tr');
-                abstractRow.appendChild(abstractSection);
-                let yearRow = document.createElement('tr');
-                yearRow.appendChild(yearSection);
-
-                /**
-                 * Put info rows in the table
-                 */
-                resourceInfo.appendChild(typeRow);
-                resourceInfo.appendChild(authorsRow);
-                resourceInfo.appendChild(abstractRow);
-                resourceInfo.appendChild(yearRow);
-
-                // add horizontal rule to separate resources visually
-                let hrule = document.createElement('hr');
-                hrule.setAttribute('id', `resource-${resources.indexOf(resource)}-hrule`);
-                relevantResourcesSection.appendChild(hrule);
-
-            });
-        }
+        });
     }
 
     /*  ---------------------------------------------------------------------------------------------
