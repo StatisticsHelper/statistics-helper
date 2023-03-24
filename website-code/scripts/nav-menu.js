@@ -31,7 +31,7 @@ window.addEventListener('DOMContentLoaded', () => {
   const menu = document.getElementById('nav-menu');
   const menuItems = menu.querySelectorAll('a[role="menuitem"]');
 
-  document.addEventListener('keydown', (event) => {
+  document.querySelector('nav').addEventListener('keydown', (event) => {
     if (navIcon === document.activeElement) {
       // If the nav-icon is in focus, open the menu with the first or last menu item in focus.
       if (event.key === 'ArrowUp') {
