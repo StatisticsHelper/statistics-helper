@@ -820,7 +820,6 @@ let currentTag = {};
             let resourceInfo = document.createElement('table');
             resourceInfo.setAttribute('id', `resource-${resources.indexOf(resource)}-info`);
             resourceInfo.setAttribute('role', 'presentation') // block screen reader from reading this as table
-            resourceInfo.setAttribute('aria-labelledby', `resource-${resources.indexOf(resource)}-toggle`);
             resourceInfo.setAttribute('style', 'display: none');
             article.appendChild(resourceInfo);
 
