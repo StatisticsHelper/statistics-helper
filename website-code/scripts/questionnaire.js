@@ -924,6 +924,61 @@ let currentTag = {};
             resourceInfo.appendChild(yearRow);
             resourceInfo.appendChild(urlRow);
 
+
+            /**
+             * If itemType === 'journalArticle':
+             *      add publication title, volume, and pages.
+             */
+            if (type === 'journalArticle') {
+
+                // publication title
+                let publicationTitle = resource.data.publicationTitle;
+                let publicationTitleSection = document.createElement('section');
+                publicationTitleSection.setAttribute('id', `resource-${resources.indexOf(resource)}-info-publication-title`);
+                let publicationTitleSectionHeader = document.createElement('h4');
+                publicationTitleSectionHeader.innerText = 'Publication Title';
+                publicationTitleSection.appendChild(publicationTitleSectionHeader);
+                let publicationTitleSectionContent = document.createElement('p');
+                publicationTitleSectionContent.innerText = publicationTitle;
+                publicationTitleSection.appendChild(publicationTitleSectionContent);
+
+                // volume
+                let volume = resource.data.volume;
+                let volumeSection = document.createElement('section');
+                volumeSection.setAttribute('id', `resource-${resources.indexOf(resource)}-info-volume`);
+                let volumeSectionHeader = document.createElement('h4');
+                volumeSectionHeader.innerText = 'Volume';
+                volumeSection.appendChild(volumeSectionHeader);
+                let volumeSectionContent = document.createElement('p');
+                volumeSectionContent.innerText = volume;
+                volumeSection.appendChild(volumeSectionContent);
+
+                // pages
+                let pages = resource.data.pages;
+                let pagesSection = document.createElement('section');
+                pagesSection.setAttribute('id', `resource-${resources.indexOf(resource)}-info-pages`);
+                let pagesSectionHeader = document.createElement('h4');
+                pagesSectionHeader.innerText = 'Pages';
+                pagesSection.appendChild(pagesSectionHeader);
+                let pagesSectionContent = document.createElement('p');
+                pagesSectionContent.innerText = pages;
+                pagesSection.appendChild(pagesSectionContent);
+                
+                // create rows for extra info
+                let publicationTitleRow = document.createElement('tr');
+                publicationTitleRow.appendChild(publicationTitleSection);
+                let volumeRow = document.createElement('tr');
+                volumeRow.appendChild(volumeSection);
+                let pagesRow = document.createElement('tr');
+                pagesRow.appendChild(pagesSection);
+
+                // put extra info rows in the table
+                resourceInfo.appendChild(publicationTitleRow);
+                resourceInfo.appendChild(volumeRow);
+                resourceInfo.appendChild(pagesRow);
+
+            }
+
             // add horizontal rule to separate resources visually
             let hrule = document.createElement('hr');
             hrule.setAttribute('id', `resource-${resources.indexOf(resource)}-hrule`);
