@@ -637,6 +637,8 @@ let currentTag = {};
      * This function prompts the list of resources from a json file.
      * @function promptResources
      */
+
+    let updatedResources = [];
     function promptResources() {
         // set the file path
         const filePath = '../pyzotero/items.json';
@@ -645,7 +647,7 @@ let currentTag = {};
         .then(async response => {
             let resources = await response.json();
             //display(resources);
-            let updatedResources = updateResources(resources);
+            updatedResources = updateResources(resources);
             console.log("updatedResources: ", updatedResources);
             paginateDisplay(updatedResources, 50);
             //displayRelevant(resources, 10, 19);
@@ -984,6 +986,7 @@ let currentTag = {};
             }
             
             localStorage.setItem("exportList", JSON.stringify(personalizedQuestionAnswerTagList));
+            localStorage.setItem("exportResources", JSON.stringify(updatedResources));
             exportJson(event);
         });
         /*  ---------------------------------------------------------------------------------------------

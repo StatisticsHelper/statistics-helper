@@ -42,27 +42,53 @@ export function exportJson (event) {
     event.preventDefault();
     console.log("event is: ", event)
     let exportList = JSON.parse(localStorage.getItem("exportList"));
+    let exportResources = JSON.parse(localStorage.getItem("exportResources"));
     localStorage.removeItem("exportList");
+    localStorage.removeItem("exportResources");
     console.log("import-export module - QAT list: ", exportList);
+    console.log("import-export module - resource list: ", exportResources);
 
-    // Convert the personalizedQuestionAnswerTagList array to a JSON string
-    const jsonString = JSON.stringify(exportList);
-
+    // Convert the QAT and resource arrays to a JSON string
+    const jsonStringQAT = JSON.stringify(exportList);
+    const jsonStringResources = JSON.stringify(exportResources);
+    
+    // 1. Download QAT list
+    
     // Create a link element
-    const link = document.createElement('a');
+    const qatLink = document.createElement('a');
 
-    // Set the link's href attribute to a data URI that contains the JSON string
-    link.href = `data:text/json;charset=utf-8,${encodeURIComponent(jsonString)}`;
+    // Set the link's href attribute to a data URI that contains the JSON strings
+    qatLink.href = `data:text/json;charset=utf-8,${encodeURIComponent(jsonStringQAT)}`;
 
     // Set the link's download attribute to the desired file name
-    link.download = 'personalizedQuestionAnswerTagList.json';
+    qatLink.download = 'personalizedQuestionAnswerTagList.json';
 
     // Append the link to the document
-    document.body.appendChild(link);
+    document.body.appendChild(qatLink);
 
     // Use the link's click() method to trigger the download
-    link.click();
+    qatLink.click();
 
     // Remove the link from the document
-    document.body.removeChild(link);
+    document.body.removeChild(qatLink);
+
+    // 2. Download Resource list
+
+    // Create a link element
+    const resourceLink = document.createElement('a');
+
+    // Set the link's href attribute to a data URI that contains the JSON strings
+    resourceLink.href = `data:text/json;charset=utf-8,${encodeURIComponent(jsonStringResources)}`;
+
+    // Set the link's download attribute to the desired file name
+    resourceLink.download = 'resourceList.json';
+
+    // Append the link to the document
+    document.body.appendChild(resourceLink);
+
+    // Use the link's click() method to trigger the download
+    resourceLink.click();
+
+    // Remove the link from the document
+    document.body.removeChild(resourceLink);
 };
