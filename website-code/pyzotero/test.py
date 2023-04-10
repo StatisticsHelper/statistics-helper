@@ -35,7 +35,7 @@ library_type = "group"
 
 # This access key is generated from a Zotero account that has access to the
 # specified library: https://www.zotero.org/support/dev/web_api/v3/basics
-api_key = "OonF9kL3S2YayiBOnx8OyxDD"
+api_key = "W2NMV5HBdkanpmNaPrsF4G7b"
 
 # Local output file for cached Zotero results (json format, portable)
 cache_path = 'items.json'
