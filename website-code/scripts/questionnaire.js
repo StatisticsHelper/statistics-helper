@@ -889,6 +889,18 @@ let currentTag = {};
             yearSectionContent.innerText = year;
             yearSection.appendChild(yearSectionContent);
 
+            // URL
+            let url = resource.data.url;
+            let urlSection = document.createElement('section');
+            urlSection.setAttribute('id', `resouce-${resources.indexOf(resource)}-info-url`);
+            let urlSectionHeader = document.createElement('h4');
+            urlSectionHeader.innerText = 'URL';
+            urlSection.appendChild(urlSectionHeader);
+            let urlSectionContent = document.createElement('a');
+            urlSectionContent.setAttribute('href', url);
+            urlSectionContent.innerText = url;
+            urlSection.appendChild(urlSectionContent);
+
             /**
              * Create rows for all info
              */
@@ -900,6 +912,8 @@ let currentTag = {};
             abstractRow.appendChild(abstractSection);
             let yearRow = document.createElement('tr');
             yearRow.appendChild(yearSection);
+            let urlRow = document.createElement('tr');
+            urlRow.appendChild(urlSection);
 
             /**
              * Put info rows in the table
@@ -908,6 +922,7 @@ let currentTag = {};
             resourceInfo.appendChild(authorsRow);
             resourceInfo.appendChild(abstractRow);
             resourceInfo.appendChild(yearRow);
+            resourceInfo.appendChild(urlRow);
 
             // add horizontal rule to separate resources visually
             let hrule = document.createElement('hr');
