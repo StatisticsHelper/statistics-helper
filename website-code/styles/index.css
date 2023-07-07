@@ -1,0 +1,114 @@
+body {
+    font-family: "Helvetica Neue", "Helvetica", "Arial", "sans-serif";
+}
+
+header {
+    height: 100vh;
+    padding: 50px;
+}
+
+#description {
+    height: 100vh;
+    padding: 50px;
+}
+
+#actions {
+    height: 100vh;
+    padding: 50px;
+}
+
+/*****************************
+        Title/Banner
+*****************************/
+#header-title-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#header-title {
+    text-align: center;
+    margin-top: 20%;
+    font-weight: bolder;
+    font-size: 50px;
+}  
+
+#banner {
+    position: absolute;
+    width: 100%;
+    height: 511px;
+    left: 0px;
+    top: 44px;
+    z-index: -1;
+}
+
+/*****************************
+        Main Content
+*****************************/
+
+#main-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#description {  
+    display: flex;
+    flex-direction: column;
+    justify-content: center;  
+    width: 80%;
+    font-style: normal;
+    font-size: 24px;
+    line-height: 28px;
+    text-align: center;
+}
+
+#actions {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    height: 337px;
+    border: 2px solid black;
+}
+
+#get-started-text {
+    font-weight: bold;
+    font-size: 30px;
+}
+
+#resume-and-papers-container {
+    display: flex;
+    justify-content: space-around;
+}
+
+#resumeForm {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Center-align vertically */
+    align-items: center; /* Center-align horizontally */
+    width: 327px;
+    height: 100px;
+    color: rgba(255, 255, 255, 1);
+    background: #528FC1;
+    border-radius: 15px;
+    margin: auto; /* Add auto margins to center-align within #resume */
+}
+
+#all-tagged-papers-link {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Center-align vertically */
+    align-items: center; /* Center-align horizontally */
+    width: 327px;
+    height: 100px;
+    color: rgba(255, 255, 255, 1);
+    background: #528FC1;
+    border-radius: 15px;
+    margin: auto; /* Add auto margins to center-align within #resume */
+}
+
+footer {
+    width: 100%;
+    background: #6B717C;
+}

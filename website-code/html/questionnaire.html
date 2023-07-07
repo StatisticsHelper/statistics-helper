@@ -5,22 +5,23 @@
         <meta name="viewport" content="width=device-width" />
         <title>Questionnaire</title>
         <script type="module" src="../scripts/nav-menu.js"></script>
+        <script src="../styles/components/button/button.js" type="text/javascript" defer></script>
         <script type="module" src="../scripts/questionnaire.js"></script>
         <link rel="stylesheet" href="../styles/navigation.css">
+        <link rel="stylesheet" href="../styles/questionnaire.css">
     </head>
 
     <body>
 
         <!--    Header     (navigation, title & image)  -->
-        <header aria-labelledby="header-title" style="padding-bottom: 2%; background-color:gold">
+        <header aria-labelledby="header-title" style="padding-bottom: 2%;">
             <!--    Navigation  -->
-            <nav>
+            <nav id="nav-menu">
                 <a id="skip-link" href="#main-content">Skip to main content</a>
-                <button type="button" id="nav-icon" aria-expanded="false" aria-controls="nav-menu" aria-haspopup="true">Menu</button>
-                <ul id="nav-menu" role="menu">
-                    <li role="none"><a role="menuitem" tabindex="-1" href="../index.html">Home</a></li>
-                    <li role="none"><a role="menuitem" tabindex="-1" href="questionnaire.html">Start Questionnaire</a></li>
-                    <li role="none"><a role="menuitem" tabindex="-1" href="all-tagged-papers.html">All Tagged Papers</a></li>
+                <ul role="menu" id="nav-menu-items">
+                    <li role="none" class="menuitem"><a class="menuitem-link" role="menuitem" href="index.html">Home</a></li>
+                    <li role="none" class="menuitem"><a class="menuitem-link" role="menuitem" href="html/questionnaire.html">Start Questionnaire</a></li>
+                    <li role="none" class="menuitem"><a class="menuitem-link" role="menuitem" href="html/all-tagged-papers.html">All Tagged Papers</a></li>
                 </ul>
             </nav>
             <!--    Title & Image   -->
@@ -29,15 +30,24 @@
 
         <!--    Main    -->
         <main id="main-content" aria-labelledby="main-title">
+            <section id="progress-bar">
+                <section id="progress">
+
+                </section>
+            </section>
             <section id="current-question">
                 <h2 id="main-title">Current Question</h2>
                 <form id="questionnaire-form">
-                    <fieldset id="question-fieldset">
-                    </fieldset>
-                    <button id="previousButton" type="submit">Previous</button>
-                    <button id="nextButton" type="submit">Next</button>
+                    <section id="question-container">
+                        <fieldset id="question-fieldset">
+                        </fieldset>
+                    </section>
+                    <section id="buttons-container">
+                        <button class="button" id="previousButton" type="submit">Previous</button>
+                        <button class="button" id="nextButton" type="submit">Next</button>
+                    </section>
                 </form>
-                <button id="exportButton">Export</button>
+                <button class="button" id="exportButton">Export</button>
             </section>
             <section id="relevant-resources">
                 <h2 id="relevant-resources-header">Relevant Resources</h2>
@@ -45,7 +55,7 @@
                     <h3 id="pagination-buttons-header">Navigate the List of Resources</h3>
                 </nav>
                 <section id="relevant-resources-list">
-                    <h3 id="relevant-resources-list-header">List of Resources (current page: )</h3>
+                    <h3 id="relevant-resources-list-header"></h3>
                 </section>
             </section>
         </main>

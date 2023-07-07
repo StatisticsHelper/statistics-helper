@@ -7,61 +7,60 @@
         <script type="module" src="scripts/nav-menu.js"></script>
         <script type="module" src="home.js"></script>
         <link rel="stylesheet" href="styles/navigation.css">
+        <link rel="stylesheet" href="styles/index.css">
     </head>
 
     <body>
         
         
         <!--    Header     (navigation, title & image)  -->
-        <header aria-labelledby="header-title" style="padding-bottom: 2%; background-color:gold">
+        <header aria-labelledby="header-title">
             <!--    Navigation  -->
-            <nav>
+            <nav id="nav-menu">
                 <a id="skip-link" href="#main-content">Skip to main content</a>
-                <button type="button" id="nav-icon" aria-expanded="false" aria-controls="nav-menu" aria-haspopup="true">Menu</button>
-                <ul role="menu" id="nav-menu">
-                    <li role="none"><a role="menuitem" tabindex="-1" href="index.html">Home</a></li>
-                    <li role="none"><a role="menuitem" tabindex="-1" href="html/questionnaire.html">Start Questionnaire</a></li>
-                    <li role="none"><a role="menuitem" tabindex="-1" href="html/all-tagged-papers.html">All Tagged Papers</a></li>
+                <ul role="menu" id="nav-menu-items">
+                    <li role="none" class="menuitem"><a class="menuitem-link" role="menuitem" href="index.html">Home</a></li>
+                    <li role="none" class="menuitem"><a class="menuitem-link" role="menuitem" href="html/questionnaire.html">Start Questionnaire</a></li>
+                    <li role="none" class="menuitem"><a class="menuitem-link" role="menuitem" href="html/all-tagged-papers.html">All Tagged Papers</a></li>
                 </ul>
             </nav>
             <!--    Title & Image   -->
-            <h1 id="header-title" style="text-align: center;">OU Libraries Statistics Helper</h1>         
-            <img src="assets/banner-img.png" alt="banner image" style="width: 100%; z-index: -1;">
+            <div id="header-title-container">
+                <h1 id="header-title">Welcome to <br>OU Libraries Statistics Helper</h1>         
+            </div>
         </header>
 
         <!--    Main    -->
         <main id="main-content">
-            <h2 id="main-title">We're here to help with your research</h2>
             <!--    Description     -->
-            <section id="description">
-                <h3 id="description-title">Statistics Helper Description</h3>
-                <p>Statistics Helper is interactive educational website to guide users to suitable statistics for their data and goals. <br>
-                The range of books, papers, and online educational materials can be overwhelming for a researcher who is not sure where to start in analyzing their data. <br>
-                This tool ask users questions about their goals and dataset to narrow down a curated list of resources and short glossary definitions, 
-                which will be presented to the user throughout the process</p>
-            </section>
+            <div id="description-container">
+                <section id="description">
+                    <h3 id="description-title">Statistics Helper Description</h3>
+                    <p>Statistics Helper is interactive educational website to guide users to suitable statistics for their data and goals. </p>
+                    <p>The range of books, papers, and online educational materials can be overwhelming for a researcher who is not sure where to start in analyzing their data. </p>
+                    <p>This tool ask users questions about their goals and dataset to narrow down a curated list of resources and short glossary definitions, 
+                    which will be presented to the user throughout the process</p>
+                </section>
+            </div>
 
             <section id="actions">
-                <h3 id="actions-title">Usage Options</h3>
-                <!--    Get Started     -->
                 <section id="get-started">
-                    <h4>Start from the beginning.</h4>
-                    <a href="html/questionnaire.html">Get Started Now!</a>
-                </section>                   
-                <!--    Resume      -->
-                <section id="resume">
-                    <h4>Resume where you left off.</h4>
-                    <form id="resumeForm">
-                        <label for="json-file">Select a JSON file:</label><br>
-                        <input type="file" id="json-file" accept=".json"><br>
-                        <button type="submit" id="uploadButton">Upload</button>
-                    </form>
+                    <a id="get-started-text" href="html/questionnaire.html">Get Started Now!</a>
                 </section>
-                <!--    All tagged papers   -->
-                <section id="all-tagged-papers">
-                    <h4>Just looking for papers?</h4>
-                    <a href="html/all-tagged-papers.html">All Tagged Papers Here</a>
-                </section>
+                <div id="resume-and-papers-container">
+                    <section id="resume">
+                        <h4>Been here before?</h4>
+                        <form id="resumeForm">
+                            <label for="json-file">Select a JSON file:</label><br>
+                            <input type="file" id="json-file" accept=".json"><br>
+                            <button type="submit" id="uploadButton">Upload</button>
+                        </form>
+                    </section>
+                    <section id="all-tagged-papers">
+                        <h4>Just looking for papers?</h4>
+                        <a id="all-tagged-papers-link" href="html/all-tagged-papers.html">All Tagged Papers Here</a>
+                    </section>
+                </div>         
             </section>
         </main>
 
