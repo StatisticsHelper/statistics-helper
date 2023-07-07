@@ -91,6 +91,14 @@ border-radius: 50px;
     justify-content: space-between;
 }
 
+#previousButton {
+    order: 1;
+}
+
+#nextButton {
+    order: 2;
+}
+
 #question-text-container {
     font-size: 20px;
     font-weight: 550;
