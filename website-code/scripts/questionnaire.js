@@ -285,6 +285,16 @@ let currentTag = {};
                                     BEGIN - FUNCTION DECLARATIONS
         ---------------------------------------------------------------------------------------------   */
 
+    /**
+     * This function updates the progress bar in the questionnaire
+     * @function updateProgressBar
+     * @param {number} progress - the progress on a scale of 0 (starting) to 100 (done).
+     */
+    function updateProgressBar (progress) {
+        var progressBar = document.getElementById('progress');
+        progressBar.style.width = progress + '%';
+    }
+
     /** 
      * This function reates and appends HTML elements for a form based on the type of input specified in a question object.
      * @function promptQuestion
@@ -297,10 +307,22 @@ let currentTag = {};
      * @param {string[]} [question.input.options] - An array of options for checkbox or radio input.
      */
     function promptQuestion(question) {
+        // first, update progress bar
+        let progress = [(personalizedQuestionAnswerTagList.length)] * 100 / questions.length;
+        updateProgressBar(progress);
+
+        // then, prompt question
         currentQuestion = question;
-        let legend = document.createElement("legend")
-        fieldset.appendChild(legend);
+        let legend = document.createElement("legend");
+        legend.setAttribute("id", "question-text");
+        let questionTextContainer = document.createElement("section");
+        questionTextContainer.setAttribute("id", "question-text-container");
+        questionTextContainer.appendChild(legend);
+        fieldset.appendChild(questionTextContainer);
         legend.innerText = question.question;
+        let inputContainer = document.createElement("section");
+        inputContainer.setAttribute("id", "input-container");
+        fieldset.appendChild(inputContainer);
 
         // console.log("currentQuestion: ", question);
         // console.log("What's coming?", question.input.type);
@@ -315,8 +337,8 @@ let currentTag = {};
             label.setAttribute("id", `${question.id}-label`)
             label.setAttribute("for", `${question.id}-text-input`);
             label.innerText = "Enter your question (maximum 100 characters): "
-            fieldset.appendChild(label);
-            fieldset.appendChild(input);
+            inputContainer.appendChild(label);
+            inputContainer.appendChild(input);
         }
         else if (question.input.type === "checkbox") {
             // console.log("checkbox coming!", question.input.type);
@@ -333,9 +355,11 @@ let currentTag = {};
                 label.setAttribute("id", `${question.id}-label${i+1}`)
                 label.setAttribute("for", `${question.id}-check${i+1}`);
                 label.innerText = option;
-                fieldset.appendChild(input);
-                fieldset.appendChild(label);
-                fieldset.appendChild(document.createElement("br"));
+                let optionContainer = document.createElement("section");
+                optionContainer.setAttribute("id", "input-option-container");
+                inputContainer.appendChild(optionContainer);
+                optionContainer.appendChild(input);
+                optionContainer.appendChild(label);
             }
         }
         else if (question.input.type === "radio") {
@@ -352,9 +376,11 @@ let currentTag = {};
                 label.setAttribute("id", `${question.id}-label${i+1}`)
                 label.setAttribute("for", `${question.id}-radio${i+1}`);
                 label.innerText = option;
-                fieldset.appendChild(input);
-                fieldset.appendChild(label);
-                fieldset.appendChild(document.createElement("br"));
+                let optionContainer = document.createElement("section");
+                optionContainer.setAttribute("id", "input-option-container");
+                inputContainer.appendChild(optionContainer);
+                optionContainer.appendChild(input);
+                optionContainer.appendChild(label);
             }
         }
 
@@ -595,9 +621,10 @@ let currentTag = {};
         if(currentQuestion.next !== "") promptQuestion(nextQuestion);
         if(currentQuestion.next === "") {
             // console.log("FINAL QUESTION!!");
-            let nextButton = document.getElementById("nextButton");
-            nextButton.setAttribute("id", "endButton");
+            let nextButton = document.getElementById("previousButton");
+            //nextButton.setAttribute("id", "endButton");
             nextButton.innerText = "End";
+            updateProgressBar(100);
         }
     }
 
@@ -619,18 +646,11 @@ let currentTag = {};
      * @function promptFinalResults
      */
     function promptFinalResults() {
-        clearWindow();
+        document.getElementById('questionnaire-form').innerHTML = '';
         // console.log("personalized list: ", personalizedQuestionAnswerTagList);
-        let resultList = document.createElement('ul');
-        fieldset.appendChild(resultList);
-        for (let i=0; i<personalizedQuestionAnswerTagList.length; i++) {
-            let item = document.createElement('li');
-            item.innerText = "QUESTION: " + personalizedQuestionAnswerTagList[i].question.question + "\n" 
-            + "ANSWER: " + JSON.stringify(personalizedQuestionAnswerTagList[i].answer.answer) + "\n"
-            + "TAG-prefix: " + personalizedQuestionAnswerTagList[i].tag.prefix + "\n" 
-            + "TAG-subtitle(s): " + JSON.stringify(personalizedQuestionAnswerTagList[i].tag.subtitles) + "\n\n\n";
-            resultList.appendChild(item);
-        }
+        let endMessage = document.createElement('p');
+        endMessage.innerText = 'Great! You just finished the questionnaire.'
+        document.body.appendChild(endMessage);
     }
 
     /**
@@ -646,9 +666,10 @@ let currentTag = {};
         fetch(filePath)
         .then(async response => {
             let resources = await response.json();
+            //console.log(resources);
             //display(resources);
             updatedResources = updateResources(resources);
-            console.log("updatedResources: ", updatedResources);
+            //console.log("updatedResources: ", updatedResources);
             paginateDisplay(updatedResources, 50);
             //displayRelevant(resources, 10, 19);
         })
@@ -675,59 +696,54 @@ let currentTag = {};
         buttonsSection.appendChild(buttonsSectionHeader);
         for (let page = 0; page < numberOfPages; page++) {
             let pageButton = document.createElement('button');
+            pageButton.setAttribute('class', 'pagination-button');
             pageButton.setAttribute('id', `page-${page+1}-button`);
             pageButton.innerText = page + 1;
-            pageButton.addEventListener('click', () => displayRelevant(resources, page, pageSize));
+            pageButton.addEventListener('click', () => {
+                // Reset background color of previous button
+                pageButton.style.background = 'blue';
+                pageButton.style.color = '#fff';
+                pageButton.style.border = '3px solid #fff';
+                displayRelevant(resources, page, pageSize);
+                for (let i = 0; i < numberOfPages; i++)
+                    if (i != page && document.getElementById(`page-${i+1}-button`)) {
+                        document.getElementById(`page-${i+1}-button`).style.background = '#fff';
+                        document.getElementById(`page-${i+1}-button`).style.color = '#000';
+                        document.getElementById(`page-${i+1}-button`).style.border = '2px solid #000';
+                    };
+            });
             buttonsSection.appendChild(pageButton);
         }
 
         // by default, display the first page
-        displayRelevant(resources, 0, pageSize);
+        document.getElementById(`page-1-button`)?.click();
     }
 
     // This function takes resources and updates them according to current tags.
     function updateResources(resources) {
-        
-        // first, build up the current tags list
-        let resourcesTagsList = resources.map(resource => resource.data.tags);
-        console.log("tags for each resource:", resourcesTagsList);
-        
-        console.log("current QAT list: ", personalizedQuestionAnswerTagList);
+
+        // before anything, filter resources based on ones that have "00. Ready for website" tag        
+        //let newResources = resources; // just to test multiple pagination buttons
+        let newResources = resources.filter(resource => {
+            if (resource.data.tags?.some(resourceTag => resourceTag.tag.toLowerCase().includes("ready for website"))) return resource;
+        });
 
         let currentTagsList = [];
         personalizedQuestionAnswerTagList.forEach(item => {
-            console.log("current tag: ", item.tag);
             if (item.question.input.type === 'text' && item.tag.subtitles !== '') currentTagsList.push(item.tag.prefix + ': ' + item.tag.subtitles);
             else if (item.question.input.type === 'radio' && item.tag.subtitles !== '') currentTagsList.push(item.tag.prefix + ': ' + item.tag.subtitles);
             else if (item.question.input.type === 'checkbox') {
                 item.tag.subtitles.forEach(subtitle => {
-                    console.log("checkbox -- subtitle is: ", subtitle, item.tag.subtitle);
                     if (subtitle !== '') currentTagsList.push(item.tag.prefix + ': ' + subtitle);
                 });
             } 
         });
-        console.log("current tags list: ", currentTagsList);
 
         // next, filter resources based on ones that fit the current tags list
         let updatedResources = [];
-        resources.forEach(resource => {
-            /*
-            let resourceTags = resource.data.tags.map(item => item.tag.toLowerCase());
-            //console.log("tags: ", resourceTags);
-            let containsAllTags = true;
-            currentTagsList.forEach(tag => {
-                if (resourceTags.includes(tag) === false) {
-                    //console.log("resource: ", resource, " contains tag: ", tag);
-                    //updatedResources.splice(updatedResources.indexOf(resource), 1);
-                    containsAllTags = false;
-                }
-            });
-            console.log("containsAllTags: ", containsAllTags);
-            if (containsAllTags) updatedResources.push(resource);
-            */
+        newResources.forEach(resource => {
             if (currentTagsList.every(tag => resource.data.tags.some(resourceTag => resourceTag.tag.toLowerCase().includes(tag)))) updatedResources.push(resource);
         });
-        console.log("updatedResources: ", updatedResources.length, updatedResources.map(resource => resource.data.tags));
 
         return updatedResources;
     }
@@ -747,7 +763,6 @@ let currentTag = {};
         let initialIndex = page * pageSize;
         let finalIndex = initialIndex + pageSize - 1;
         let relevantResources = resources.slice(initialIndex, finalIndex + 1);
-        //console.log(`began displaying ${relevantResources.length} resources from [${initialIndex}] to [${finalIndex}]: ${relevantResources}`);
         
         // first, make sure all articles are hidden
         resources.forEach( resource => {
@@ -759,18 +774,11 @@ let currentTag = {};
         
         // then, display only the relevant articles
         relevantResources.forEach( resource => {
-            //console.log(`we have resource at index: ${relevantResources.indexOf(resource)} of relevantResources and index: ${resources.indexOf(resource)} of resources.`);
-            //console.log(`displaying article at index: ${resources.indexOf(resource)}`);
             let article = document.getElementById(`resource-${resources.indexOf(resource)}`);
             if (article != null) article.style.display = 'block';
             let hrule = document.getElementById(`resource-${resources.indexOf(resource)}-hrule`);
             if (hrule != null) hrule.style.display = 'block';
         });
-        //console.log(`finished displaying ${relevantResources.length} resources from [${initialIndex}] to [${relevantResources.length - 1}]: ${relevantResources}`);
-
-        // modify header so it shows current page number
-        let currentPageHeader = document.getElementById('relevant-resources-list-header');
-        currentPageHeader.innerText = `List of Resources (current page: ${page+1})`;
     }
 
     // This function takes an array of objects
@@ -805,6 +813,7 @@ let currentTag = {};
              * Create button to toggle display of collapsible table (relevant info, look below)
              */
             let toggleInfoButton = document.createElement('button');
+            toggleInfoButton.setAttribute('class', 'button');
             toggleInfoButton.setAttribute('id', `resource-${resources.indexOf(resource)}-toggle`);
             toggleInfoButton.setAttribute('type', 'button');
             toggleInfoButton.setAttribute('aria-expanded', 'false');
@@ -879,7 +888,7 @@ let currentTag = {};
             abstractSection.appendChild(abstractSectionContent);
 
             // year
-            let year = resource.data.year;
+            let year = resource.data.date;
             let yearSection = document.createElement('section');
             yearSection.setAttribute('id', `resource-${resources.indexOf(resource)}-info-year`);
             let yearSectionHeader = document.createElement('h4');
@@ -1062,9 +1071,4 @@ let currentTag = {};
         /*  ---------------------------------------------------------------------------------------------
                                     END - EXPORT
         ---------------------------------------------------------------------------------------------   */
-
-    /*  ---------------------------------------------------------------------------------------------
-                                    BEGIN - DISPLAY RELEVANT PAPERS
-        ---------------------------------------------------------------------------------------------   */
-
 })
