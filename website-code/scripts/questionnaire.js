@@ -311,6 +311,8 @@ let currentTag = {};
         let progress = [(personalizedQuestionAnswerTagList.length)] * 100 / questions.length;
         updateProgressBar(progress);
 
+        if (personalizedQuestionAnswerTagList.length > 0) displayGoal();
+
         // then, prompt question
         currentQuestion = question;
         let legend = document.createElement("legend");
@@ -994,6 +996,15 @@ let currentTag = {};
             relevantResourcesSection.appendChild(hrule);
 
         });
+    }
+
+    function displayGoal() {
+        console.log("personalizedQAT: ", personalizedQuestionAnswerTagList[0].answer.answer);
+        let goal = document.getElementById('goal');
+        goal.innerText = personalizedQuestionAnswerTagList[0].answer.answer;
+
+        let goalSection = document.getElementById('goal-section');
+        goalSection.style.display = 'flex';
     }
 
     /*  ---------------------------------------------------------------------------------------------

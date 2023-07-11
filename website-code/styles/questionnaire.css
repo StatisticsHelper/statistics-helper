@@ -53,6 +53,27 @@ border-radius: 50px;
 }
 
 /*****************************
+            Goal
+*****************************/
+
+#goal-section {
+    height: 5%;
+    padding: 50px;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#goal-section-title {
+    font-size: 20px;
+}
+
+#goal {
+    font-size: 30px;
+}
+
+/*****************************
             Main
 *****************************/
 
@@ -64,6 +85,10 @@ border-radius: 50px;
 }
 
 #main-title {
+    display: none;
+}
+
+#your-question {
     display: none;
 }
 
