@@ -39,7 +39,9 @@ all_requests_size=${#all_requests[@]}
 all_requests[all_requests_size - 1]="${all_requests[all_requests_size - 1]%\,}"
 
 # 3. empty the output file
-file_path="items.json"
+# use absolute path because using relative path means you'll have to change working directory when
+#   you run the script
+file_path="C:\Users\ad17a\Desktop\oulib-statistics\github-repo-local\website-code\pyzotero\items.json"
 > "$file_path"
 
 # 4. echo the array

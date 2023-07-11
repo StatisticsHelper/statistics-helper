@@ -786,7 +786,7 @@ let currentTag = {};
     //  and displays them on screen.
     function display(resources) {
 
-        console.log("allPapers: ", resources.length, resources);
+        //console.log("allPapers: ", resources.length, resources);
         let relevantResourcesSection = document.getElementById('relevant-resources-list');      
         resources.forEach (resource => {
 
