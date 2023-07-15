@@ -4,30 +4,9 @@ body {
     flex-direction: column;
 }
 
-/*****************************
-            Menu
-*****************************/
-#nav-icon {
-    margin: 0;
-    padding: 6px;
-    display: inline-block;
-    position: relative;
-    background-color: #034575;
-    border: 1px solid #034575;
-    font-size: 0.9em;
-    color: white;
-    border-radius: 5px;
-}
-
-#nav-menu {
-    margin: 0;
-    padding: 7px 4px;
-    list-style: none;
-    display: none;
-    position: absolute;
-    border: 2px solid #034575;
-    border-radius: 5px;
-    background-color: #eee;
+#header-title {
+    margin-top: 5%;
+    text-align: center;
 }
 
 /*****************************

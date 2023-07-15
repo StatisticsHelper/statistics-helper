@@ -672,7 +672,7 @@ let currentTag = {};
             //display(resources);
             updatedResources = updateResources(resources);
             //console.log("updatedResources: ", updatedResources);
-            paginateDisplay(updatedResources, 50);
+            paginateDisplay(updatedResources, 25);
             //displayRelevant(resources, 10, 19);
         })
         .catch(error => console.error("Error happened while reading Pyzotero resource list", error));

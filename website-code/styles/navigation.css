@@ -11,7 +11,9 @@
 #nav-menu {
     position: fixed;
     width: 100%;
+    top: 0px;
     left: 0px;
+    padding: 20px;
     background-color: #fff;
     z-index: 9999;
     display: flex;
@@ -19,8 +21,7 @@
 }
 
 #nav-menu.with-border {
-    border-top:     2px solid black;
-    border-bottom:  2px solid black;
+    border-bottom:  5px solid black;
   }
 
 .menuitem {
