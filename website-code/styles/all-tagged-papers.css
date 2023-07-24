@@ -1,0 +1,112 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    margin: 7rem;
+}
+
+h1 {
+    align-self: center;
+}
+
+#footer-title {
+    margin: 0;
+}
+
+/*****************************
+        Resources
+*****************************/
+
+#relevant-resources {
+    display: flex;
+    flex-direction: column;
+}
+
+#relevant-resources-header {
+    align-self: center;
+}
+
+#pagination-buttons {
+    align-self: center;
+}
+
+.pagination-button { 
+    margin: 5px;
+    padding: 10px;
+    background-color: white;
+    border: solid 2px black;
+    text-decoration: none;
+    font-weight: bold;
+    color: black;
+    width: 6vw;
+}
+.pagination-button:hover {
+    margin: 5px;
+    padding: 10px;
+    background-color: black;
+    border: solid 2px black;
+    text-decoration: none;
+    font-weight: bold;
+    color: white;
+    width: 6vw;
+} 
+.pagination-button:focus {
+    margin: 5px;
+    padding: 10px;
+    background-color: black;
+    border: solid 2px black;
+    text-decoration: none;
+    font-weight: bold;
+    color: white;
+    width: 6vw;
+}
+.pagination-button-clicked {
+    margin: 5px;
+    padding: 10px;
+    background-color: black;
+    border: solid 2px black;
+    text-decoration: none;
+    font-weight: bold;
+    color: white;
+    width: 6vw;
+}
+
+.resource-button {
+    width: auto;
+    font-size: 2rem;
+    border: 0px;
+    background-color: white;
+    border: solid 2px black;
+    color: black;
+}
+
+.resource-button:hover {
+    width: auto;
+    font-size: 2rem;
+    border: 0px;
+    background-color: black;
+    border: solid 2px black;
+    color: white;
+}
+
+.resource-button:focus {
+    width: auto;
+    font-size: 2rem;
+    border: 0px;
+    background-color: black;
+    border: solid 2px black;
+    color: white;
+}
+
+.resource-button-clicked {
+    width: auto;
+    font-size: 2rem;
+    border: 0px;
+    background-color: black;
+    border: solid 2px black;
+    color: white;
+}

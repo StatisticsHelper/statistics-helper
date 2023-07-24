@@ -1,3 +1,8 @@
+/*
+@import "https://unpkg.com/open-props" layer(design.system);
+@import "https://unpkg.com/open-props/normalize.min.css" layer(demo.support);
+*/
+
 body {
     font-family: "Helvetica Neue", "Helvetica", "Arial", "sans-serif";
     display: flex;
@@ -10,11 +15,73 @@ body {
 }
 
 /*****************************
+            Main
+*****************************/
+
+#main-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#questionnaire-container {
+    min-height: 55vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#relevant-resources {
+    height: 80vh;
+}
+
+/*****************************
+            Goal
+*****************************/
+
+#goal-section {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 5rem;
+    padding: 2rem;
+    border: 3px solid #333333;
+    font-size: 2.5rem;
+    border-radius: 2% 6% 5% 4% / 1% 1% 2% 4%;
+    background: #FFFCB1;
+    position: relative;
+    width: fit-content;
+    &::before {
+        content: '';
+        border: 2px solid #353535;
+        display: block;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate3d(-50%, -50%, 0) scale(1.015) rotate(0.5deg);
+        border-radius: 1% 1% 2% 4% / 2% 6% 5% 4%;
+    }
+}
+
+#goal {
+    font-weight: 600;
+}
+
+/*****************************
         Progress Bar
 *****************************/
 
+#progress-percentage {
+    position: absolute;
+    right: 10000px; /* off screen */
+}
+
 #progress-bar {
-    width: 600px;
+    width: 50rem;
+    margin: 2rem;
     background-color: #eeeeee;
     border-radius: 50px;
     border-color: rgb(12, 11, 11);
@@ -25,49 +92,17 @@ body {
 }
   
 #progress {
-width: 0%;
-height: 100%;
-background-color: #4caf50;
-border-radius: 50px;
+    width: 0%;
+    height: 100%;
+    background-color: #6644ff;
+    border-radius: 50px;
 }
 
 /*****************************
-            Goal
+        Current Question
 *****************************/
 
-#goal-section {
-    height: 5%;
-    padding: 50px;
-    display: none;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-#goal-section-title {
-    font-size: 20px;
-}
-
-#goal {
-    font-size: 30px;
-}
-
-/*****************************
-            Main
-*****************************/
-
-#main-content {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-#main-title {
-    display: none;
-}
-
-#your-question {
+#current-question-title {
     display: none;
 }
 
@@ -78,46 +113,14 @@ border-radius: 50px;
     align-items: center;
 }
 
+#questionnaire-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 #question-container {
     width: 100%;
-}
-
-#question-fieldset {
-    border: none;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-#buttons-container {
-    display: flex;
-    justify-content: space-between;
-}
-
-#previousButton {
-    order: 1;
-}
-
-#nextButton {
-    order: 2;
-}
-
-#question-text-container {
-    font-size: 20px;
-    font-weight: 550;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    padding: 10px;
-    background-color: aqua;
-    border-radius: 50px;
-    width: 700px;
-    min-height: 50px;
-    overflow: auto;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
 }
 
 #question-text {
@@ -132,48 +135,229 @@ border-radius: 50px;
     overflow: auto;
 }
 
-.button { 
-    display: inline-block;
-    outline: 0;
-    cursor: pointer;
-    border: 2px solid #000;
-    border-radius: 3px;
-    color: #000;
-    background: #fff;
+#question-fieldset {
+    border: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#question-text-container {
+    height: 5%;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    border: 3px solid #333333;
+    font-size: 2.5rem;
+    border-radius: 2% 6% 5% 4% / 1% 1% 2% 4%;
+    background: #ffffff;
+    position: relative;
+    &::before {
+        content: '';
+        border: 2px solid #353535;
+        display: block;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate3d(-50%, -50%, 0) scale(1.015) rotate(0.5deg);
+        border-radius: 1% 1% 2% 4% / 2% 6% 5% 4%;
+    }
+}
+
+#input-container {
     font-size: 20px;
-    font-weight: 600;
-    line-height: 28px;
-    padding: 12px 20px;
-    text-align:center;
-    transition-duration: .15s;
-    transition-property: all;
-    transition-timing-function: cubic-bezier(.4,0,.2,1);
-    :hover{
-        background: rgb(251, 193, 245);
-    }   
+    height: 20vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+
+/*****************************
+        Control Buttons
+*****************************/
+
+#buttons-container {
+    display: flex;
+    justify-content: space-between;
+    width: 50rem;
+    justify-self: center;
+    align-self: center;
+}
+
+#previousButton {
+    order: 1;
+    margin: 5px;
+    padding: 10px;
+    background-color: white;
+    border: solid 2px black;
+    text-decoration: none;
+    font-weight: bold;
+    color: black;
+    width: 6vw;
+}
+#previousButton:hover {
+    order: 1;
+    margin: 5px;
+    padding: 10px;
+    background-color: black;
+    border: solid 2px black;
+    text-decoration: none;
+    font-weight: bold;
+    color: white;
+    width: 6vw;
+    cursor: pointer;
+}
+#previousButton:focus {
+    order: 1;
+    margin: 5px;
+    padding: 10px;
+    background-color: black;
+    border: solid 2px black;
+    text-decoration: none;
+    font-weight: bold;
+    color: white;
+    width: 6vw;
+}
+
+#nextButton {
+    order: 2;
+    margin: 5px;
+    padding: 10px;
+    background-color: white;
+    border: solid 2px black;
+    text-decoration: none;
+    font-weight: bold;
+    color: black;
+    width: 6vw;
+}
+#nextButton:hover {
+    order: 2;
+    margin: 5px;
+    padding: 10px;
+    background-color: black;
+    border: solid 2px black;
+    text-decoration: none;
+    font-weight: bold;
+    color: white;
+    width: 6vw;
+}
+#nextButton:focus {
+    order: 2;
+    margin: 5px;
+    padding: 10px;
+    background-color: black;
+    border: solid 2px black;
+    text-decoration: none;
+    font-weight: bold;
+    color: white;
+    width: 6vw;
+}
+
+button { 
+    margin: 5px;
+    padding: 10px;
+    background-color: white;
+    border: solid 2px black;
+    text-decoration: none;
+    font-weight: bold;
+    color: black;
+    width: 6vw; 
+}
+
+/*****************************
+        Resources
+*****************************/
+
+#relevant-resources {
+    display: flex;
+    flex-direction: column;
+}
+
+#relevant-resources-header {
+    align-self: center;
+}
+
+#pagination-buttons {
+    align-self: center;
 }
 
 .pagination-button { 
-    display: inline-block;
-    outline: 0;
-    cursor: pointer;
-    border: 2px solid #000;
-    border-radius: 3px;
-    color: #000;
-    background: #fff;
-    font-size: 20px;
-    font-weight: 600;
-    line-height: 28px;
-    padding: 12px 20px;
-    text-align:center;
-    transition-duration: .15s;
-    transition-property: all;
-    transition-timing-function: cubic-bezier(.4,0,.2,1);
-    :hover{
-        background: rgb(251, 193, 245);
-    }   
+    margin: 5px;
+    padding: 10px;
+    background-color: white;
+    border: solid 2px black;
+    text-decoration: none;
+    font-weight: bold;
+    color: black;
+    width: 6vw;
 }
-.pagination-button-clicked { 
-    color: #fff;
-    background: blue;
+.pagination-button:hover {
+    margin: 5px;
+    padding: 10px;
+    background-color: black;
+    border: solid 2px black;
+    text-decoration: none;
+    font-weight: bold;
+    color: white;
+    width: 6vw;
+} 
+.pagination-button:focus {
+    margin: 5px;
+    padding: 10px;
+    background-color: black;
+    border: solid 2px black;
+    text-decoration: none;
+    font-weight: bold;
+    color: white;
+    width: 6vw;
+}
+.pagination-button-clicked {
+    margin: 5px;
+    padding: 10px;
+    background-color: black;
+    border: solid 2px black;
+    text-decoration: none;
+    font-weight: bold;
+    color: white;
+    width: 6vw;
+}
+
+.resource-button {
+    width: auto;
+    font-size: 2rem;
+    border: 0px;
+    background-color: white;
+    border: solid 2px black;
+    color: black;
+}
+
+.resource-button:hover {
+    width: auto;
+    font-size: 2rem;
+    border: 0px;
+    background-color: black;
+    border: solid 2px black;
+    color: white;
+}
+
+.resource-button:focus {
+    width: auto;
+    font-size: 2rem;
+    border: 0px;
+    background-color: black;
+    border: solid 2px black;
+    color: white;
+}
+
+.resource-button-clicked {
+    width: auto;
+    font-size: 2rem;
+    border: 0px;
+    background-color: black;
+    border: solid 2px black;
+    color: white;
 }

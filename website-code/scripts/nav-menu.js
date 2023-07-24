@@ -24,7 +24,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
   document.querySelector('nav').addEventListener('keydown', (event) => {
       // If a menu item is in focus, navigate to the previous or next menu item using the up and down arrow keys.
-      if (event.key === 'ArrowUp' || event.key === 'arrowLeft') {
+      if (event.key === 'ArrowUp' || event.key === 'ArrowLeft') {
         event.preventDefault();
         if (document.activeElement === menuItems[0]) {
           menuItems[menuItems.length - 1].focus();
@@ -32,7 +32,7 @@ window.addEventListener('DOMContentLoaded', () => {
           const prevIndex = Array.from(menuItems).indexOf(document.activeElement) - 1;
           menuItems[prevIndex].focus();
         }
-      } else if (event.key === 'ArrowDown' || event.key === 'arrowRight') {
+      } else if (event.key === 'ArrowDown' || event.key === 'ArrowRight') {
         event.preventDefault();
         if (document.activeElement === menuItems[menuItems.length - 1]) {
           menuItems[0].focus();

@@ -1,12 +1,6 @@
 export function importJson (event) {
     event.preventDefault();
-    alert('uploading -- under construction');
-    const form = document.getElementById("resumeForm");
-    const fileInput = document.getElementById('json-file');
-    console.log("uploading check", form, fileInput);
-
-    // Get the file input element
-    console.log("uploading check", fileInput);
+    const fileInput = document.getElementById('json-file'); 
 
     // Check if a file was selected
     if (fileInput.files.length > 0) {

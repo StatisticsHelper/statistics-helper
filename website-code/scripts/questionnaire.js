@@ -291,7 +291,9 @@ let currentTag = {};
      * @param {number} progress - the progress on a scale of 0 (starting) to 100 (done).
      */
     function updateProgressBar (progress) {
-        var progressBar = document.getElementById('progress');
+        let progressPercent = document.getElementById('progress-percentage');
+        progressPercent.innerText = progress + '%';
+        let progressBar = document.getElementById('progress');
         progressBar.style.width = progress + '%';
     }
 
@@ -385,6 +387,9 @@ let currentTag = {};
                 optionContainer.appendChild(label);
             }
         }
+
+        // set focus to current question
+        document.getElementById('current-question').focus();
 
         // prompt an updated list of resources
         promptResources();
@@ -652,7 +657,7 @@ let currentTag = {};
         // console.log("personalized list: ", personalizedQuestionAnswerTagList);
         let endMessage = document.createElement('p');
         endMessage.innerText = 'Great! You just finished the questionnaire.'
-        document.body.appendChild(endMessage);
+        document.getElementById('current-question').appendChild(endMessage);
     }
 
     /**
@@ -683,9 +688,7 @@ let currentTag = {};
 
         // first, display all resources
         let relevantResourcesListSection = document.getElementById('relevant-resources-list');
-        let relevantResourcesListSectionHeader = document.getElementById('relevant-resources-list-header');
         relevantResourcesListSection.innerHTML = '';
-        relevantResourcesListSection.appendChild(relevantResourcesListSectionHeader);
         display(resources);
         
         // figure out the number of pages
@@ -693,9 +696,7 @@ let currentTag = {};
 
         // create a button for each page, if there are no buttons already there.
         let buttonsSection = document.getElementById('pagination-buttons');
-        let buttonsSectionHeader = document.getElementById('pagination-buttons-header');
         buttonsSection.innerHTML = '';
-        buttonsSection.appendChild(buttonsSectionHeader);
         for (let page = 0; page < numberOfPages; page++) {
             let pageButton = document.createElement('button');
             pageButton.setAttribute('class', 'pagination-button');
@@ -703,22 +704,22 @@ let currentTag = {};
             pageButton.innerText = page + 1;
             pageButton.addEventListener('click', () => {
                 // Reset background color of previous button
-                pageButton.style.background = 'blue';
-                pageButton.style.color = '#fff';
-                pageButton.style.border = '3px solid #fff';
                 displayRelevant(resources, page, pageSize);
                 for (let i = 0; i < numberOfPages; i++)
                     if (i != page && document.getElementById(`page-${i+1}-button`)) {
-                        document.getElementById(`page-${i+1}-button`).style.background = '#fff';
-                        document.getElementById(`page-${i+1}-button`).style.color = '#000';
-                        document.getElementById(`page-${i+1}-button`).style.border = '2px solid #000';
-                    };
+                        document.getElementById(`page-${i+1}-button`).setAttribute('class', 'pagination-button');
+                    }
+                    else if (i == page) {
+                        document.getElementById(`page-${i+1}-button`).setAttribute('class', 'pagination-button-clicked');
+                    }
             });
             buttonsSection.appendChild(pageButton);
         }
 
         // by default, display the first page
-        document.getElementById(`page-1-button`)?.click();
+        if (document.getElementById(`page-1-button`)) {
+            document.getElementById(`page-1-button`).click();
+        }
     }
 
     // This function takes resources and updates them according to current tags.
@@ -815,7 +816,7 @@ let currentTag = {};
              * Create button to toggle display of collapsible table (relevant info, look below)
              */
             let toggleInfoButton = document.createElement('button');
-            toggleInfoButton.setAttribute('class', 'button');
+            toggleInfoButton.setAttribute('class', 'resource-button');
             toggleInfoButton.setAttribute('id', `resource-${resources.indexOf(resource)}-toggle`);
             toggleInfoButton.setAttribute('type', 'button');
             toggleInfoButton.setAttribute('aria-expanded', 'false');
@@ -842,10 +843,12 @@ let currentTag = {};
             toggleInfoButton.addEventListener('click', () => {
                 if (resourceInfo.style.display === 'block') {
                     toggleInfoButton.setAttribute('aria-expanded', 'false');
+                    toggleInfoButton.setAttribute('class', 'resource-button');
                     resourceInfo.style.display = 'none';
                 }    
                 else {
                     toggleInfoButton.setAttribute('aria-expanded', 'true');
+                    toggleInfoButton.setAttribute('class', 'resource-button-clicked');
                     resourceInfo.style.display = 'block';
                 }    
             })    
@@ -872,9 +875,12 @@ let currentTag = {};
             let authorsSectionHeader = document.createElement('h4');
             authorsSectionHeader.innerText = 'Author(s)';
             authorsSection.appendChild(authorsSectionHeader);
-            let authorsSectionContent = document.createElement('p');
+            let authorsSectionContent = document.createElement('ol');
+            console.log("authors: ", authors);
             authors?.forEach(author => {
-                authorsSectionContent.innerHTML += `${author.firstName} ${author.lastName} <br>`;
+                let currentAuthor = document.createElement('li');
+                currentAuthor.innerText = `${author.firstName} ${author.lastName}`;
+                authorsSectionContent.appendChild(currentAuthor);
             });    
             authorsSection.appendChild(authorsSectionContent);
 
@@ -999,12 +1005,14 @@ let currentTag = {};
     }
 
     function displayGoal() {
-        console.log("personalizedQAT: ", personalizedQuestionAnswerTagList[0].answer.answer);
+        //console.log("personalizedQAT: ", personalizedQuestionAnswerTagList[0].answer.answer);
         let goal = document.getElementById('goal');
         goal.innerText = personalizedQuestionAnswerTagList[0].answer.answer;
-
         let goalSection = document.getElementById('goal-section');
         goalSection.style.display = 'flex';
+
+        // hide h1
+        document.querySelector('h1').style.display = 'none';
     }
 
     /*  ---------------------------------------------------------------------------------------------

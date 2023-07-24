@@ -1,0 +1,65 @@
+body {
+    background-color: #FFF;
+    font-family: "Helvetica Neue", "Helvetica", "Arial", "sans-serif";
+}
+
+button:hover {
+    cursor: pointer;
+}
+
+:where(h1) {
+    font-family: "Helvetica Neue", "Helvetica", "Arial", "sans-serif";
+    font-weight: 900;
+    font-size: 4rem;
+    color: #000;
+}
+
+:where(h2) {
+    font-family: "Helvetica Neue", "Helvetica", "Arial", "sans-serif";
+    font-weight: 800;
+    font-size: 3rem;
+    color: #363433;
+}
+
+:where(h3) {
+    font-family: "Helvetica Neue", "Helvetica", "Arial", "sans-serif";
+    font-weight: 800;
+    font-size: 2rem;
+    color: #363433;
+}
+
+:where(h4) {
+    font-family: "Helvetica Neue", "Helvetica", "Arial", "sans-serif";
+    font-weight: 800;
+    font-size: 1.5rem;
+    color: #363433;
+}
+
+:where(p) {
+    color: #363433;
+    font-family: "Helvetica Neue", "Helvetica", "Arial", "sans-serif";
+    font-size: 1.5rem;
+}
+
+footer {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    background: #000000;
+    height: auto;
+}
+
+#footer-title {
+    color: white;
+    padding-top: 2vh;
+    padding-left: 2vw;
+    font-size: 2rem;
+}
+#footer-info {
+    color: rgb(190, 190, 190);
+    padding-left: 2vw;
+}
+
+#contact-email {
+    color: yellow;
+}
