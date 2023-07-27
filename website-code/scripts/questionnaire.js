@@ -668,7 +668,7 @@ let currentTag = {};
     let updatedResources = [];
     function promptResources() {
         // set the file path
-        const filePath = '../pyzotero/items.json';
+        const filePath = '../backend/items.json';
 
         fetch(filePath)
         .then(async response => {
@@ -680,7 +680,7 @@ let currentTag = {};
             paginateDisplay(updatedResources, 25);
             //displayRelevant(resources, 10, 19);
         })
-        .catch(error => console.error("Error happened while reading Pyzotero resource list", error));
+        .catch(error => console.error("Error happened while reading Zotero resource list", error));
     }
 
     // This function presupposes that all elements are loaded onto HTML.
@@ -785,7 +785,7 @@ let currentTag = {};
     }
 
     // This function takes an array of objects
-    //  namely, resources fetched from the Pyzotero API,
+    //  namely, resources fetched from the Zotero API,
     //  and displays them on screen.
     function display(resources) {
 
