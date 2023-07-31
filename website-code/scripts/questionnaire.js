@@ -8,269 +8,51 @@
 
 import {exportJson} from './import-export.js'
 
+// personalList is json file uploaded by user.
+// check out importJson in import-export.js
 let personalList = JSON.parse(localStorage.getItem("personalList"));
 localStorage.removeItem("personalList");
 // console.log("personalized list: ", personalList);
 
-let questions = [
-    {
-        id: "00_Question",
-        question: "What is your question? Use this to guide you.",
-        required: "Yes",
-        input: {
-            type: "text",
-            condition: "maxlength='100'"
-        },
-        tags: {
-            prefix: "",
-            subtitles: []
-        },
-        next: "01_goal"
-    },
-    {
-        id: "01_goal",
-        question: "What is your goal?",
-        required: "Yes",
-        input: {
-            type: "checkbox",
-            options: [
-                "Describe a dataset's central tendencies, distribution, association, etc.",
-                "Predict values from one dataset to another",
-                "Test hypotheses",
-                "Generate hypotheses for later exploration",
-                "I don't know"
-            ]
-        },
-        tags: {
-            prefix: "goal",
-            subtitles: [
-                "descriptive",
-                "predictive",
-                "inferential",
-                "exploratory",
-                ""
-            ]
-        },
-        next: "02_relationship"
-    },
-    {
-        id: "02_relationship",
-        question: "What kind of relationship?",
-        required: "Yes",
-        input: {
-            type: "radio",
-            options: [
-                "Association/correlation - no causation implied",
-                "Cause-and-effect",
-                "None (I want to describe my data only)"
-            ]
-        },
-        tags: {
-            prefix: "causation",
-            subtitles: [
-                "association (none implied)",
-                "cause-and-effect",
-                "none (descriptive)"
-            ]
-        },
-        next: "03_information"
-    },
-    {
-        id: "03_information",
-        question: "What information do you need from the statistics helper process?",
-        required: "No",
-        showCondition: {
-            questionID: "01_goal",
-            answer: [
-                "Test hypotheses",
-                "I don't know"
-            ]
-        },
-        input: {
-            type: "checkbox",
-            options: [
-                "The math of how it works",
-                "Critiques and limitations",
-                "An example of implementation",
-                "Overview of method",
-                "Comparison of methods",
-                "How to teach the method or concepts (pedagogy)",
-                "How to implement the method",
-                "All the info you have!"
-            ]
-        },
-        tags: {
-            prefix: "paper type",
-            subtitles: [
-                "description of method",
-                "critique",
-                "good example",
-                "general reference",
-                "review/comparison/metaanalysis",
-                "how to teach",
-                "guide to use",
-                ""
-            ]
-        },
-        next: "04_have_designed"
-    },
-    {
-        id: "04_have_designed",
-        question: "Have you already collected your data or designed your data collection?",
-        required: "Yes",
-        input: {
-            type: "radio",
-            options: [
-                "Yes",
-                "No"
-            ]
-        },
-        tags: {
-            prefix: "study design",
-            subtitles: [
-                "",
-                "a priori"
-            ]
-        },
-        next: "04_sample_size"
-    },
-    {
-        id: "04_sample_size",
-        question: "Do you want to read about sample size choices?",
-        required: "Yes",
-        showCondition: {
-            questionID: "04_have_designed",
-            answer: [
-                "No"
-            ]
-        },
-        input: {
-            type: "radio",
-            options: [
-                "Yes",
-                "No"
-            ]
-        },
-        tags: {
-            prefix: "study design",
-            subtitles: [
-                "sample size",
-                ""
-            ]
-        },
-        next: "05_repeated"
-    },
-    {
-        id: "05_repeated",
-        question: "Are you measuring teh same thing more than once in time or space?",
-        required: "Yes",
-        input: {
-            type: "radio",
-            options: [
-                "Yes",
-                "No, everything is independent",
-                "No, the points are different items"
-            ]
-        },
-        tags: {
-            prefix: "study design",
-            subtitles: [
-                "repeated measures/randomized block/random effects",
-                "repeated measures/randomized block",
-                "correlation structures"
-            ]
-        },
-        next: "05_relationship"
-    },
-    {
-        id: "05_relationship",
-        question: "What relationship shape do you expect?",
-        required: "No",
-        showCondition: {
-            questionID: "02_relationship",
-            answer: [
-                "Association/correlation - no causation implied",
-                "Cause-and-effect"
-            ]
-        },
-        input: {
-            type: "radio",
-            options: [
-                "Linear",
-                "Non-linear",
-                "Something else or I don't know"
-            ]
-        },
-        tags: {
-            prefix: "relationship",
-            subtitles: [
-                "linear",
-                "nonlinear"
-            ]
-        },
-        next: "06_report"
-    },
-    {
-        id: "06_report",
-        question: "What do you need to report for your data",
-        required: "Yes",
-        input: {
-            type: "checkbox",
-            options: [
-                "I'm not sure yet - show me all possibilities",
-                "Intervals (error bars, variation, etc.)",
-                "How well this works for other things",
-                "Graphs and figures and plots!",
-                "Statistical significance (p values and test statstics)",
-                "No significance tests, I just want to see/show what it looks like",
-                "Comparisons among multiple groups"
-            ]
-        },
-        tags: {
-            prefix: "interpretation and meaning",
-            subtitles: [
-                "",
-                "confidence intervals/parameter estimation",
-                "cross validation",
-                "plotting",
-                "significance",
-                "exploratory only",
-                "post hoc comparisons",
-                "diagnostics",
-                "unsupervised clustering",
-                "effect size, variable importance, loadings"
-            ]
-        },
-        next: "06_interpret"
-    },
-    {
-        id: "06_interpret",
-        question: "What type of mistakes in interpretation are you worried about?",
-        required: "Yes",
-        input: {
-            type: "checkbox",
-            options: [
-                "Sample size or statistical power",
-                "Survey/sampling bias",
-                "Meeting assumptions of the test",
-                "Measurement error",
-                "Statsitical significance but not meaningful results"
-            ]
-        },
-        tags: {
-            prefix: "interpretation and meaning",
-            subtitles: [
-                "statistical power",
-                "survey/sampling bias",
-                "meeting assumptions",
-                "measurement error",
-                ""
-            ]
-        },
-        next: ""
+let questions = []
+// Function to fetch the questions array from the JSON file
+async function fetchQuestions() {
+    try {
+        // defaults to ../html if path is './questions.json' (but json is in ../scripts)   
+        const response = await fetch('../scripts/questions.json');
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        const questions = await response.json();
+        return questions;
     }
-]
-// console.log(questions);
+    catch (error) {
+        console.error('Error fetching questions:', error);
+        return null;
+    }
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+fetchQuestions()
+/*  -----------------------------------------------
+                *******************
+                    ATTENTION
+                *******************
+    1) Everything below depends on this fetch!
+    2) The indendation may not tell you so, but
+        everything is under `.then`
+        ((res) => { ALL CODE BELOW })
+    3) Why? It didn't sound like a good idea to
+        indent the entire code under an already
+        indented function.
+ -------------------------------------------------- */
+  .then((res) => {
+    if (res) {
+        console.log(res);
+        questions = res
+        // Now you can use the questions array as needed
+    }
+
 
 let fieldset = document.getElementById("question-fieldset")
 let personalizedQuestionAnswerTagList = [];
@@ -278,9 +60,8 @@ let currentQuestion = {};
 let currentAnswer = {};
 let currentTag = {};    
 
- window.addEventListener('DOMContentLoaded', () => {
 
-    
+    console.log('content loaded')    
     /*  ---------------------------------------------------------------------------------------------
                                     BEGIN - FUNCTION DECLARATIONS
         ---------------------------------------------------------------------------------------------   */
@@ -1091,3 +872,4 @@ let currentTag = {};
                                     END - EXPORT
         ---------------------------------------------------------------------------------------------   */
 })
+});
