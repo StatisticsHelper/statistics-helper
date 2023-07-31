@@ -2,7 +2,7 @@
 
 # Set variables
 URL="https://api.zotero.org/groups/2547147/items"
-API_KEY="W2NMV5HBdkanpmNaPrsF4G7b"
+API_KEY=$(cat api-key.txt)
 # you can't make it more than 100 - hard limit!
 ITEMS_PER_PAGE=100
 PAGES=30
@@ -41,7 +41,7 @@ all_requests[all_requests_size - 1]="${all_requests[all_requests_size - 1]%\,}"
 # 3. empty the output file
 # use absolute path because using relative path means you'll have to change working directory when
 #   you run the script
-file_path="C:\Users\ad17a\Desktop\oulib-statistics\github-repo-local\website-code\pyzotero\items.json"
+file_path="items.json"
 > "$file_path"
 
 # 4. echo the array
