@@ -1,0 +1,29 @@
+body {
+    height: 1000px;
+}
+main {
+    height: 80%;
+    margin: 10%;
+    display: flex;
+    justify-content: space-between;
+}
+#questions-display {
+    display: flex;
+    flex-direction: column;
+    overflow: scroll;
+}
+
+#current-question {
+    display: flex;
+    flex-direction: column;
+    overflow: scroll;
+}
+
+#show-condition-answer {
+    display: flex;
+    flex-direction: column;
+}
+#input-options {
+    display: flex;
+    flex-direction: column;
+}
