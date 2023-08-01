@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en-US">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width" />
+        <title>Admin Dashboard</title>
+        <script type="module" src="../scripts/admin-dashboard.js"></script>
+        <link rel="stylesheet" href="../styles/admin-dashboard.css">
+    </head>
+
+    <body>
+
+        <header aria-labelledby="header-title" style="padding-bottom: 2%;">
+            <!--    Navigation  -->
+        </header>
+
+        <main>
+            <section id="questions-display"></section>
+            <section id="current-question">
+                <section id="id">
+                    <label for="input-id">ID: </label>
+                    <input type="text" id="input-id" placeholder="">
+                </section>
+    
+                <section id="question">
+                    <label for="input-question">Question: </label>
+                    <input type="text" id="input-question" placeholder="">
+                </section>
+    
+                <label for="required">Required: </label>
+                <fieldset id="required">                    
+                    <input type="radio" id="input-required-yes" name="required">
+                    <label for="input-required-yes">Yes</label>
+                    <input type="radio" id="input-required-no" name="required">
+                    <label for="input-required-no">No</label>
+    
+                    <label for="show-condition">(if not required) Show Condition:</label>
+                    <section id="show-condition">
+                        <label for="show-condition-question-id">Depends on what? (question ID) </label>
+                        <input type="text" id="show-condition-question-id">
+                        <label for="show-condition-answer">And what answer? </label>
+                        <fieldset id="show-condition-answer"></fieldset>
+                    </section>
+                </fieldset>
+    
+                <label for="input">Input: </label>
+                <fieldset id="input">
+                    <label for="input-type">Input Type: </label>
+                    <section id="input-type">
+                        <input type="radio" id="input-type-radio" name="input-type">
+                        <label for="input-type-radio">Radio (single choice)</label>
+                        <input type="radio" id="input-type-checkbox" name="input-type">
+                        <label for="input-type-checkbox">Checkbox (multiple choice)</label>
+                    </section>
+                    <label for="input-options">Input Options: </label>
+                    <fieldset id="input-options"></fieldset>
+                </fieldset>
+    
+                <label for="tags">Tags: </label>
+                <fieldset id="tags">
+                    <label for="tags-prefix">Tags Prefix: </label>
+                    <input type="text" id="tags-prefix" placeholder="">
+                    <label for="tags-subtitles">Tags Subtitles: </label>
+                    <fieldset id="tags-subtitles"></fieldset>
+                </fieldset>
+    
+                <section id="next-section">
+                    <label for="next">Next: </label>
+                    <input type="text" id="next" placeholder="">
+                </section>
+            </section>
+            <section id="save-or-cancel">
+                <button id="save-button">Save</button>
+                <button id="cancel-button">Cancel</button>
+            </section>
+        </main>
+    </body>
