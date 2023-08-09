@@ -76,7 +76,7 @@ body {
 
 #progress-percentage {
     position: absolute;
-    right: 10000px; /* off screen */
+    right: 10000px;
 }
 
 #progress-bar {
