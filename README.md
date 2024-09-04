@@ -2,7 +2,7 @@
 
 ## Update
 Project is now completed.  
-You can visit the website at https://oulib-statistics.oucreate.com/.
+You can visit the website at https://stats-helper.libraries.ou.edu/index.html (deprecated: https://oulib-statistics.oucreate.com/).
 
 ## Project Description
 This project aims to deliver a website that prompts users with a questionnaire and curates a personalized list of resources/tools based on each user's answer.
