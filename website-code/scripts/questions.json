@@ -98,24 +98,38 @@
                 ""
             ]
         },
-        "next": "04_have_designed"
+        "next": "04_reporting"
     },
     {
-        "id": "04_have_designed",
-        "question": "Have you already collected your data or designed your data collection?",
+        "id": "04_reporting",
+        "question": "What do you need to report for your data?",
         "required": "Yes",
         "input": {
-            "type": "radio",
+            "type": "checkbox",
             "options": [
-                "Yes",
-                "No"
+                "Intervals (error bars, variation, etc)",
+                "How well this works for other things",
+                "Graphs and figures and plots!",
+                "Statistical significance (p values and test statistics)",
+                "No significance tests, I just want to see/show what it looks like",
+                "Comparisons among multiple groups",
+                "Model diagnostics",
+                "Previously unknown groups or organization",
+                "Which variables important, effect size"
             ]
         },
         "tags": {
             "prefix": "study design",
             "subtitles": [
-                "",
-                "a priori"
+                "confidence intervals/parameter estimation",
+                "cross validation",
+                "plotting",
+                "significance",
+                "exploratory only",
+                "post hoc comparisons",
+                "diagnostics",
+                "unsupervised clustering",
+                "effect size, variable importance, loadings"
             ]
         },
         "next": "04_sample_size"
