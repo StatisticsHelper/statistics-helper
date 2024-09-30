@@ -119,7 +119,7 @@
             ]
         },
         "tags": {
-            "prefix": "study design",
+            "prefix": "Interpretation and meaning",
             "subtitles": [
                 "confidence intervals/parameter estimation",
                 "cross validation",
@@ -132,119 +132,10 @@
                 "effect size, variable importance, loadings"
             ]
         },
-        "next": "04_sample_size"
+        "next": "05_interpretation"
     },
     {
-        "id": "04_sample_size",
-        "question": "Do you want to read about sample size choices?",
-        "required": "Yes",
-        "showCondition": {
-            "questionID": "04_have_designed",
-            "answer": [
-                "No"
-            ]
-        },
-        "input": {
-            "type": "radio",
-            "options": [
-                "Yes",
-                "No"
-            ]
-        },
-        "tags": {
-            "prefix": "study design",
-            "subtitles": [
-                "sample size",
-                ""
-            ]
-        },
-        "next": "05_repeated"
-    },
-    {
-        "id": "05_repeated",
-        "question": "Are you measuring teh same thing more than once in time or space?",
-        "required": "Yes",
-        "input": {
-            "type": "radio",
-            "options": [
-                "Yes",
-                "No, everything is independent",
-                "No, the points are different items"
-            ]
-        },
-        "tags": {
-            "prefix": "study design",
-            "subtitles": [
-                "repeated measures/randomized block/random effects",
-                "repeated measures/randomized block",
-                "correlation structures"
-            ]
-        },
-        "next": "05_relationship"
-    },
-    {
-        "id": "05_relationship",
-        "question": "What relationship shape do you expect?",
-        "required": "No",
-        "showCondition": {
-            "questionID": "02_relationship",
-            "answer": [
-                "Association/correlation - no causation implied",
-                "Cause-and-effect"
-            ]
-        },
-        "input": {
-            "type": "radio",
-            "options": [
-                "Linear",
-                "Non-linear",
-                "Something else or I don't know"
-            ]
-        },
-        "tags": {
-            "prefix": "relationship",
-            "subtitles": [
-                "linear",
-                "nonlinear"
-            ]
-        },
-        "next": "06_report"
-    },
-    {
-        "id": "06_report",
-        "question": "What do you need to report for your data",
-        "required": "Yes",
-        "input": {
-            "type": "checkbox",
-            "options": [
-                "I'm not sure yet - show me all possibilities",
-                "Intervals (error bars, variation, etc.)",
-                "How well this works for other things",
-                "Graphs and figures and plots!",
-                "Statistical significance (p values and test statstics)",
-                "No significance tests, I just want to see/show what it looks like",
-                "Comparisons among multiple groups"
-            ]
-        },
-        "tags": {
-            "prefix": "interpretation and meaning",
-            "subtitles": [
-                "",
-                "confidence intervals/parameter estimation",
-                "cross validation",
-                "plotting",
-                "significance",
-                "exploratory only",
-                "post hoc comparisons",
-                "diagnostics",
-                "unsupervised clustering",
-                "effect size, variable importance, loadings"
-            ]
-        },
-        "next": "06_interpret"
-    },
-    {
-        "id": "06_interpret",
+        "id": "05_interpretation",
         "question": "What type of mistakes in interpretation are you worried about?",
         "required": "Yes",
         "input": {
@@ -252,18 +143,351 @@
             "options": [
                 "Sample size or statistical power",
                 "Survey/sampling bias",
-                "Meeting assumptions of the test",
-                "Measurement error",
-                "Statsitical significance but not meaningful results"
+		"Meeting assumptions of the test",
+		"Measurement error"
             ]
         },
         "tags": {
-            "prefix": "interpretation and meaning",
+            "prefix": "Interpretation and meaning",
             "subtitles": [
                 "statistical power",
                 "survey/sampling bias",
-                "meeting assumptions",
-                "measurement error",
+		"meeting assumptions",
+		"measurement error"
+            ]
+        },
+        "next": "07_already_collected"
+    },
+    {
+        "id": "07_already_collected",
+        "question": "Have you already collected your data or designed your data collection?",
+        "required": "Yes",
+        "input": {
+            "type": "radio",
+            "options": [
+                "Yes",
+                "Yes, but others have collected it and I harvest",
+                "No"
+            ]
+        },
+        "tags": {
+            "prefix": "Study design",
+            "subtitles": [
+                "",
+		"",
+                "a priori"
+            ]
+        },
+        "next": "08_sample_size"
+    },
+    {
+        "id": "08_sample_size",
+        "question": "What relationship shape do you expect?",
+        "required": "No",
+        "showCondition": {
+            "questionID": "07_already_collected",
+            "answer": [
+                "No"
+            ]
+        },
+        "input": {
+            "type": "radio",
+            "options": [
+                "Yes",
+                "No or I don't know"
+		]
+        },
+        "tags": {
+            "prefix": "Study design",
+            "subtitles": [
+                "a priori",
+                ""
+            ]
+        },
+        "next": "09_repeated"
+    },
+    {
+        "id": "09_repeated",
+        "question": "Are you measuring the same thing more than once in time or space?",
+        "required": "Yes",
+        "input": {
+            "type": "radio",
+            "options": [
+                "Yes",
+                "No, the points are different items, but they are close together in time or space",
+                "No, everything is independent",
+            ]
+        },
+        "tags": {
+            "prefix": "Study design",
+            "subtitles": [
+                "Repeated measures/randomized block/random effects",
+                "Repeated measures/randomized block/random effects",
+                ""
+            ]
+        },
+        "next": "10_interaction"
+    },
+    {
+        "id": "10_interaction",
+        "question": "Are you trying to detect interactions among the predictor variables' effect on the response?",
+        "required": "Yes",
+        "input": {
+            "type": "radio",
+            "options": [
+                "Yes",
+		"No"
+            ]
+        },
+        "tags": {
+            "prefix": "Study design",
+            "subtitles": [
+                "interactions",
+                ""
+            ]
+        },
+        "next": "11_covariates"
+    },
+    {
+        "id": "11_covariates",
+        "question": "Are any of your variables covariates?  (ie important to know but not actually what you're interested in)",
+        "required": "Yes",
+        "input": {
+            "type": "radio",
+            "options": [
+                "Yes",
+		"No"
+            ]
+        },
+        "tags": {
+            "prefix": "Study design",
+            "subtitles": [
+                "covariates",
+                ""
+            ]
+        },
+        "next": "12_reduction"
+    },
+    {
+        "id": "12_reduction",
+        "question": "Do you have multiple variables that you want to combine into something simpler?",
+        "required": "Yes",
+        "input": {
+            "type": "radio",
+            "options": [
+                "Yes",
+		"No"
+            ]
+        },
+        "tags": {
+            "prefix": "Study design",
+            "subtitles": [
+                "dimension/variable reduction",
+                ""
+            ]
+        },
+        "next": "13_shape"
+    },
+    {
+        "id": "13_shape",
+        "question": "What relationship shape do you expect?",
+        "required": "Yes",
+        "input": {
+            "type": "radio",
+            "options": [
+                "Linear",
+		"Non linear",
+		"Something else or I don't know"
+            ]
+        },
+        "tags": {
+            "prefix": "Relationship",
+            "subtitles": [
+                "Linear",
+                "Nonlinear",
+		""
+            ]
+        },
+        "next": "14_how_many"
+    },
+    {
+        "id": "14_how_many",
+        "question": "How many variables do you have?",
+        "required": "Yes",
+        "input": {
+            "type": "radio",
+            "options": [
+                "One",
+		"More than one"
+            ]
+        },
+        "tags": {
+            "prefix": "Predictor variables",
+            "subtitles": [
+                "none (no association)",
+		""
+            ]
+        },
+        "next": "15_response"
+    },
+    {
+        "id": "15_response",
+        "question": "How many are response variables?",
+        "required": "Yes",
+        "showCondition": {
+            "questionID": "14_how_many",
+            "answer": [
+                ""
+            ]
+        },
+        "input": {
+            "type": "radio",
+            "options": [
+                "One",
+		"More than one"
+            ]
+        },
+        "tags": {
+            "prefix": "Response variables",
+            "subtitles": [
+                "univariate",
+		"multivariate"
+            ]
+        },
+        "next": "16_response_types"
+    },
+    {
+        "id": "16_response_types",
+        "question": "What kind of response variables do you have?",
+        "required": "Yes",
+        "showCondition": {
+            "questionID": "14_how_many",
+            "answer": [
+                ""
+            ]
+        },
+        "input": {
+            "type": "checkbox",
+            "options": [
+                "Quantitative (any type of numeric scale, including ratio, interval, and discontinous)",
+		"Qualitative (categorical, frequency counts, enumeration data)",
+		"Qualitative (categorical, unordered, nominal scale)",
+		"Qualitative (categorical, ordered, ordinal scale)"
+            ]
+        },
+        "tags": {
+            "prefix": "Response variables",
+            "subtitles": [
+                "numeric",
+		"frequency",
+		"categorical",
+		"ordinal"
+            ]
+        },
+        "next": "17_num_response"
+    },
+    {
+        "id": "17_num_response",
+        "question": "What kind of numbers are they?",
+        "required": "Yes",
+        "showCondition": {
+            "questionID": "16_response_types",
+            "answer": [
+                "Quantitative (any type of numeric scale, including ratio, interval, and discontinous)"
+            ]
+        },
+        "input": {
+            "type": "checkbox",
+            "options": [
+                "Quantitative discontinous (integers)",
+		"Quantitative continuous, ratio scale (has a meaningful zero)",
+		"Quantitative continuous, interval scale (arbitrary scale)",
+		"I'm not sure"
+            ]
+        },
+        "tags": {
+            "prefix": "Response variables",
+            "subtitles": [
+                "integers",
+		"ratio",
+		"interval",
+		""
+            ]
+        },
+        "next": "18_predictors"
+    },
+    {
+        "id": "18_predictors",
+        "question": "How many are predictor variables?",
+        "required": "Yes",
+        "showCondition": {
+            "questionID": "14_how_many",
+            "answer": [
+                ""
+            ]
+        },
+        "input": {
+            "type": "radio",
+            "options": [
+                "One",
+		"More than one"
+            ]
+        },
+        "tags": {
+            "prefix": "Predictor variables",
+            "subtitles": [
+                "univariate",
+		"multivariate"
+            ]
+        },
+        "next": "19_predictors_types"
+    },
+    {
+        "id": "19_predictors_types",
+        "question": "What kind of predictor variables do you have?",
+        "required": "Yes",
+        "showCondition": {
+            "questionID": "14_how_many",
+            "answer": [
+                "univariate",
+		"multivariate"
+            ]
+        },
+        "input": {
+            "type": "checkbox",
+            "options": [
+                "Quantitative (any type of numeric scale, including ratio, interval, and discontinous)",
+		"Qualitative (categorical, frequency counts, enumeration data)",
+		"Qualitative (categorical, unordered, nominal scale)",
+		"Qualitative (categorical, ordered, ordinal scale)"
+            ]
+        },
+        "tags": {
+            "prefix": "Predictor variables",
+            "subtitles": [
+                "numeric",
+		"frequency",
+		"categorical",
+		"ordinal"
+            ]
+        },
+        "next": "20_num_predictors"
+    },
+    {
+        "id": "final_question",
+        "question": "ending question?",
+        "required": "Yes",
+        "input": {
+            "type": "radio",
+            "options": [
+                "Yes",
+		"No"
+            ]
+        },
+        "tags": {
+            "prefix": "Study design",
+            "subtitles": [
+                "interactions",
                 ""
             ]
         },
