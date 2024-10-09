@@ -215,7 +215,7 @@
             "options": [
                 "Yes",
                 "No, the points are different items, but they are close together in time or space",
-                "No, everything is independent",
+                "No, everything is independent"
             ]
         },
         "tags": {
