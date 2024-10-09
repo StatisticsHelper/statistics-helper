@@ -474,21 +474,203 @@
         "next": "20_num_predictors"
     },
     {
-        "id": "final_question",
-        "question": "ending question?",
+        "id": "20_num_predictors",
+        "question": "For numeric predictors, what kind of numbers are they?",
+        "required": "Yes",
+        "showCondition": {
+            "questionID": "19_predictors_types",
+            "answer": [
+                "Quantitative (any type of numeric scale, including ratio, interval, and discontinous)"
+            ]
+        },
+        "input": {
+            "type": "checkbox",
+            "options": [
+                "Quantitative discontinous (integers)",
+		"Quantitative continuous, ratio scale (has a meaningful zero)",
+		"Quantitative continuous, interval scale (arbitrary scale)",
+		"I'm not sure"
+            ]
+        },
+        "tags": {
+            "prefix": "Predictor variables",
+            "subtitles": [
+                "integers",
+		"ratio",
+		"interval",
+		""
+            ]
+        },
+        "next": "21_missing_data"
+    },
+    {
+        "id": "21_missing_data",
+        "question": "Do you have (or anticipate having - most field studies do) any missing data?",
+        "required": "Yes",
+        "input": {
+            "type": "checkbox",
+            "options": [
+                "No",
+		"Yes, I'm missing whole samples out of my design (my design is unbalanced if categorical)",
+		"Yes, I'm missing some data for some samples",
+		"Yes, I have censored (detection limit, survival, etc) data",
+		"I'm not sure"
+            ]
+        },
+        "tags": {
+            "prefix": "Missing Data",
+            "subtitles": [
+                "complete cases",
+		"whole rows missing / unbalanced design",
+		"partial cases (any pattern)",
+		"censored",
+                ""
+            ]
+        },
+        "next": "22_distributions"
+    },
+    {
+        "id": "22_distributions",
+        "question": "Do you want to make assumptions about the data distributions in your statistical test?",
         "required": "Yes",
         "input": {
             "type": "radio",
             "options": [
                 "Yes",
-		"No"
+		"No",
+		"I'm not sure"
             ]
         },
         "tags": {
-            "prefix": "Study design",
+            "prefix": "Data assumptions",
             "subtitles": [
-                "interactions",
+                "parametric",
+		"nonparametric",
                 ""
+            ]
+        },
+        "next": "23_assumptions"
+    },
+    {
+        "id": "23_assumptions",
+        "question": "What assumptions do your data meet?",
+        "required": "Yes",
+        "input": {
+            "type": "checkbox",
+            "options": [
+                "Equality of variance",
+		"Normality of residuals",
+		"Residuals can be transformed to normality",
+		"Binomial response",
+		"Some sort of upper or lower bound to the response",
+		"I'm not sure"
+            ]
+        },
+        "tags": {
+            "prefix": "Data assumptions",
+            "subtitles": [
+                "homoscedasticity",
+		"transformation to normality",
+		"Gaussian/normal",
+		"binomial",
+		"bounded",
+                ""
+            ]
+        },
+        "next": "24_super_helpful"
+    },
+    {
+        "id": "24_super_helpful",
+        "question": "Do you want to see fewer papers?",
+        "required": "Yes",
+        "input": {
+            "type": "checkbox",
+            "options": [
+                "Yes",
+		"No, let me see everything for my choices"
+            ]
+        },
+        "tags": {
+            "prefix": "Super helpful",
+            "subtitles": [
+                ""
+            ]
+        },
+        "next": "25_domain"
+    },
+    {
+        "id": "25_domain",
+        "question": "I want to see papers from my domain only (only recommended if you have a lot to read or your statistical procedure is very mechanism-specific)",
+        "required": "Yes",
+        "input": {
+            "type": "checkbox",
+            "options": [
+                "Yes",
+		"No, let me see everything for my choices"
+            ]
+        },
+        "tags": {
+            "prefix": "Domain",
+            "subtitles": [
+                ""
+            ]
+        },
+        "next": "26_software"
+    },
+    {
+        "id": "26_software",
+        "question": "I want to see papers with software-specific implementation",
+        "required": "Yes",
+        "input": {
+            "type": "checkbox",
+            "options": [
+                "I don't care",
+		"R",
+		"RShiny (interactive)",
+		"S Plus",
+		"SAS",
+		"Microsoft Excel",
+		"Stata"
+            ]
+        },
+        "tags": {
+            "prefix": "Software",
+            "subtitles": [
+                "",
+		"R",
+		"RShiny",
+		"S Plus",
+		"SAS",
+		"Microsoft Excel",
+		"Stata"
+            ]
+        },
+        "next": "27_philosophy"
+    },
+    {
+        "id": "27_philosophy",
+        "question": "Do you have a statistical philosophy you want to apply? You can pick more than one.",
+        "required": "Yes",
+        "input": {
+            "type": "checkbox",
+            "options": [
+                "I don't know",
+		"Bayesian",
+		"Data mining",
+		"Frequentist",
+		"Machine learning",
+		"Model selection + information theoretic"
+            ]
+        },
+        "tags": {
+            "prefix": "Philosophy",
+            "subtitles": [
+                "",
+                "Bayesian",
+		"data mining",
+		"frequentist",
+		"machine learning",
+		"model selection + information theoretic"
             ]
         },
         "next": ""
